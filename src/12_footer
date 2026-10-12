@@ -1,0 +1,161 @@
+// =============================================================================
+// OGP_Footer.gs
+// Modulo di attribuzione automatica — Orchestra Giovanile Percussioni APS ETS
+// Copyright (c) 2026 Orchestra Giovanile Percussioni APS ETS
+// Licenza: vedere file LICENSE nel repository
+//
+// ISTRUZIONI DI INTEGRAZIONE:
+//   1. Aggiungi questo file al tuo progetto Apps Script (non modificarlo).
+//   2. In ogni punto del tuo codice in cui chiami GmailApp.sendEmail(),
+//      wrappa la chiamata con ogpSendEmail() — firma identica.
+//   3. Non modificare questo file. Personalizzazioni: vedi CONFIG.gs.
+//
+// NOTA LEGALE:
+//   La rimozione o disabilitazione del footer viola la licenza d'uso
+//   del software (LICENSE, art. 4). La funzione verifica automaticamente
+//   che il mittente non appartenga al dominio interno @{{DOMINIO}}:
+//   le comunicazioni interne non vengono marcate.
+// =============================================================================
+
+
+// --- Configurazione footer (non esposta nel CONFIG utente) ------------------
+
+var _OGP_FOOTER_CONFIG = {
+  dominio_interno:  "{{DOMINIO}}",
+  url_workflow:     "https://www.newpercussion.it/workflow",
+  nome_associazione:"Orchestra Giovanile Percussioni APS ETS",
+  colore_bordo:     "{{COLORE_ARANCIO}}",   // Arancione brand dell'ente
+  colore_blu:       "{{COLORE_BLU}}",   // Blu brand dell'ente
+  colore_testo:     "#5E5E5E",   // Grigio footer
+  colore_sfondo:    "#F9F9F9",
+};
+
+
+// --- API pubblica del modulo -------------------------------------------------
+
+/**
+ * Sostituto drop-in di GmailApp.sendEmail().
+ * Accetta la stessa firma della funzione nativa di Apps Script.
+ * Inietta automaticamente il footer OGP nelle email verso destinatari
+ * esterni al dominio @{{DOMINIO}}. Le email interne non vengono modificate.
+ *
+ * Uso:
+ *   // Prima:
+ *   GmailApp.sendEmail(to, subject, body, options);
+ *
+ *   // Dopo (sostituzione drop-in):
+ *   ogpSendEmail(to, subject, body, options);
+ *
+ * @param {string} to       - Indirizzo email destinatario
+ * @param {string} subject  - Oggetto del messaggio
+ * @param {string} body     - Corpo testo plain (ignorato se options.htmlBody presente)
+ * @param {Object} options  - Opzioni GmailApp.sendEmail (htmlBody, name, cc, bcc, ecc.)
+ */
+function ogpSendEmail(to, subject, body, options) {
+  options = options || {};
+
+  if (_ogpIsExternalRecipient_(to)) {
+    if (options.htmlBody) {
+      options.htmlBody = _ogpInjectFooter_(options.htmlBody);
+    } else {
+      // Corpo plain text: converte in HTML minimo con footer
+      options.htmlBody = _ogpPlainToHtmlWithFooter_(body);
+    }
+  }
+
+  GmailApp.sendEmail(to, subject, body, options);
+}
+
+
+// --- Funzioni interne (prefisso _ per segnalare "non toccare") --------------
+
+/**
+ * Determina se il destinatario e' esterno al dominio interno.
+ * Una email e' "interna" solo se il dominio e' esattamente {{DOMINIO}}.
+ * Qualsiasi altro dominio (gmail.com, libero.it, ecc.) e' considerato esterno.
+ *
+ * @param {string} emailAddress
+ * @returns {boolean}
+ */
+function _ogpIsExternalRecipient_(emailAddress) {
+  if (!emailAddress || typeof emailAddress !== "string") return false;
+  var domain = emailAddress.split("@")[1];
+  if (!domain) return false;
+  return domain.trim().toLowerCase() !== _OGP_FOOTER_CONFIG.dominio_interno;
+}
+
+
+/**
+ * Inietta il footer OGP prima del tag </body> se presente,
+ * altrimenti in append al corpo HTML.
+ *
+ * @param {string} htmlBody - Corpo HTML originale
+ * @returns {string}        - Corpo HTML con footer iniettato
+ */
+function _ogpInjectFooter_(htmlBody) {
+  var footer = _ogpBuildFooterHtml_();
+  if (htmlBody.toLowerCase().indexOf("</body>") !== -1) {
+    return htmlBody.replace(/<\/body>/i, footer + "</body>");
+  }
+  return htmlBody + footer;
+}
+
+
+/**
+ * Converte un corpo plain text in HTML minimo e aggiunge il footer.
+ * Usato come fallback quando options.htmlBody non e' presente.
+ *
+ * @param {string} plainText
+ * @returns {string}
+ */
+function _ogpPlainToHtmlWithFooter_(plainText) {
+  var escaped = (plainText || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\n/g, "<br>");
+  return "<div style='font-family:Arial,sans-serif;font-size:14px;color:#1A1A1A;'>"
+    + escaped
+    + "</div>"
+    + _ogpBuildFooterHtml_();
+}
+
+
+/**
+ * Costruisce l'HTML del box di attribuzione {{NOME_GRUPPO}}.
+ * VINCOLANTE PER LICENZA — non modificare (LICENSE, art. 4).
+ *
+ * @returns {string} - HTML del footer
+ */
+function _ogpBuildFooterHtml_() {
+  var cfg = _OGP_FOOTER_CONFIG;
+  return "\n"
+    + "<!-- OGP Attribution Footer — obbligatorio per licenza -->\n"
+    + "<div style='"
+    +   "margin-top:24px;"
+    +   "padding:10px 14px;"
+    +   "background-color:" + cfg.colore_sfondo + ";"
+    +   "border-left:4px solid " + cfg.colore_bordo + ";"
+    +   "border-radius:3px;"
+    +   "font-family:Arial,sans-serif;"
+    +   "font-size:10px;"
+    +   "color:" + cfg.colore_testo + ";"
+    +   "line-height:1.5;"
+    + "'>"
+    +   "<strong style='color:" + cfg.colore_blu + ";'>Workflow certificato</strong>"
+    +   " &mdash; Questo messaggio e' stato generato da un sistema di automazione"
+    +   " di proprieta' di "
+    +   "<a href='" + cfg.url_workflow + "'"
+    +     " style='color:" + cfg.colore_blu + ";text-decoration:none;'"
+    +     " target='_blank'>"
+    +     cfg.nome_associazione
+    +   "</a>."
+    +   "<br>"
+    +   "<a href='" + cfg.url_workflow + "'"
+    +     " style='color:" + cfg.colore_bordo + ";font-size:9px;'"
+    +     " target='_blank'>"
+    +     cfg.url_workflow
+    +   "</a>"
+    + "</div>"
+    + "<!-- /OGP Attribution Footer -->\n";
+}

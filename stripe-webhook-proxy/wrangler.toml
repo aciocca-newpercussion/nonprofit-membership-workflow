@@ -1,0 +1,6 @@
+name = "stripe-webhook-proxy"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/{{DEPLOYMENT_ID}}/exec"

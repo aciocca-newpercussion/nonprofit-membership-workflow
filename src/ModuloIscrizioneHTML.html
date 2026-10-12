@@ -1,0 +1,2750 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unisciti a {{NOME_GRUPPO}} — {{NOME_LEGALE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #ef9100;
+      --orange-soft: #fff4e2;
+      --orange-deep: #b56d00;
+      --navy: #2c2d80;
+      --navy-deep: #1a1b50;
+      --page-bg: #f6f4ef;
+      --white: #ffffff;
+      --line: #e2e0da;
+      --muted: #6d6f7d;
+      --error: #d92d20;
+      --error-bg: #fff4f3;
+      --ok: #1b8a4b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background-color: var(--page-bg);
+      color: var(--navy);
+      display: flex;
+      justify-content: center;
+      padding: 22px 12px 40px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* ─── Intestazione associativa ─────────────────────────────── */
+    .form-letterhead {
+      background-color: var(--white);
+      border-radius: 18px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .letterhead-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .letterhead-name {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      margin-bottom: 3px;
+    }
+
+    .letterhead-details {
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ─── Card principale ──────────────────────────────────────── */
+    .form-card {
+      background-color: var(--white);
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-body { padding: 30px 34px 34px; }
+
+    /* ─── Barra alta: lingua + avanzamento ─────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 34px;
+      border-bottom: 1px solid var(--line);
+      background: #fcfbf8;
+      flex-wrap: wrap;
+    }
+
+    .steps {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .step-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-dot .bullet {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #e8e6e0;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .25s, color .25s;
+    }
+
+    .step-dot.active { color: var(--navy); }
+    .step-dot.active .bullet { background: var(--orange); color: var(--white); }
+    .step-dot.done .bullet { background: var(--ok); color: var(--white); }
+    .step-sep { width: 18px; height: 2px; background: #e8e6e0; border-radius: 2px; }
+
+    .lang-select {
+      width: auto;              /* non deve ereditare il width:100% dei campi form */
+      flex: 0 0 auto;
+      background-color: var(--white);
+      color: var(--navy);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+
+    /* ─── Titoli di sezione ────────────────────────────────────── */
+    .section-head { margin: 6px 0 20px; }
+
+    .section-head h2 {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
+    }
+
+    .section-head p {
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .block-title {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .9px;
+      color: var(--orange-deep);
+      margin: 30px 0 4px;
+    }
+
+    .block-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .block-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    /* ─── Scelta ruolo (card) ──────────────────────────────────── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    .role-card {
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 20px 18px;
+      cursor: pointer;
+      background: var(--white);
+      transition: border-color .2s, background .2s, transform .12s;
+      text-align: left;
+      display: block;
+      width: 100%;
+    }
+
+    .role-card:hover { border-color: var(--orange); transform: translateY(-2px); }
+
+    .role-card.selected {
+      border-color: var(--orange);
+      background: var(--orange-soft);
+    }
+
+    .role-emoji { font-size: 26px; display: block; margin-bottom: 10px; }
+
+    .role-title {
+      font-size: 16.5px;
+      font-weight: 800;
+      margin-bottom: 5px;
+      color: var(--navy);
+    }
+
+    .role-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* ─── Campi ────────────────────────────────────────────────── */
+    .field { margin-bottom: 18px; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      font-size: 14.5px;
+      margin-bottom: 7px;
+      color: var(--navy);
+    }
+
+    .req { color: var(--orange-deep); margin-left: 3px; font-weight: 700; }
+
+    .hint {
+      font-size: 12.5px;
+      color: var(--muted);
+      margin-top: 6px;
+      display: block;
+      line-height: 1.5;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: var(--navy);
+      background-color: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      outline: none;
+      transition: border-color .18s, box-shadow .18s;
+    }
+
+    textarea { resize: vertical; min-height: 92px; line-height: 1.5; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(239,145,0,.18);
+    }
+
+    input.is-valid { border-color: rgba(27,138,75,.5); }
+
+    input.is-invalid, select.is-invalid, textarea.is-invalid {
+      border-color: var(--error);
+      background: var(--error-bg);
+    }
+
+    input.is-invalid:focus, select.is-invalid:focus, textarea.is-invalid:focus {
+      box-shadow: 0 0 0 3px rgba(217,45,32,.15);
+    }
+
+    .err {
+      display: none;
+      font-size: 12.8px;
+      font-weight: 600;
+      color: var(--error);
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    .err.show { display: block; }
+    .err::before { content: "▲  "; font-size: 9px; vertical-align: 1.5px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ─── Sesso: due pulsanti invece della <select> nativa ───────
+       Il picker nativo di alcuni browser/webview mobili (es. browser interni
+       di app di messaggistica) può risultare poco affidabile al tocco: due
+       pulsanti sempre visibili tolgono qualunque dipendenza dal picker
+       di sistema, oltre a richiedere un tap in meno. */
+    .sesso-toggle { display: flex; gap: 10px; }
+
+    .sesso-btn {
+      flex: 1;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      background-color: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: border-color .18s, background-color .18s;
+    }
+
+    .sesso-btn:hover { border-color: var(--orange); }
+
+    .sesso-btn.selected {
+      border-color: var(--orange);
+      background-color: var(--orange-soft);
+      color: var(--orange-deep);
+    }
+
+    .sesso-toggle.is-invalid .sesso-btn { border-color: var(--error); }
+
+    .phone-row { display: flex; gap: 8px; }
+    .phone-row input:first-child { width: 88px; flex: none; text-align: center; }
+
+    /* ─── Upload ───────────────────────────────────────────────── */
+    .dropzone {
+      background: #fcfbf8;
+      border: 2px dashed var(--line);
+      border-radius: 16px;
+      padding: 24px 18px;
+      text-align: center;
+      position: relative;
+      transition: border-color .18s, background .18s;
+    }
+
+    .dropzone:hover, .dropzone.dragging {
+      border-color: var(--orange);
+      background: var(--orange-soft);
+    }
+
+    .dropzone.is-invalid { border-color: var(--error); background: var(--error-bg); }
+
+    /* In attesa della compressione/lettura dei file: evita doppi drop mentre gira */
+    .dropzone.processing { opacity: .55; pointer-events: none; }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .dz-icon { font-size: 24px; margin-bottom: 8px; }
+
+    .dz-main { font-size: 14.5px; font-weight: 600; color: var(--navy); }
+
+    .dz-hint { font-size: 12.5px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+
+    .file-chips { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+
+    .file-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f2f8f4;
+      border: 1px solid rgba(27,138,75,.28);
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-size: 13.5px;
+    }
+
+    .file-chip .fc-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(27,138,75,.28);
+      background: var(--white);
+    }
+
+    .file-chip .fc-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      background: var(--white);
+      border: 1px solid rgba(27,138,75,.28);
+    }
+
+    .file-chip .fc-name {
+      flex: 1;
+      font-weight: 600;
+      color: #14663a;
+      word-break: break-all;
+      line-height: 1.35;
+    }
+
+    .file-chip .fc-size { font-size: 12px; color: var(--muted); white-space: nowrap; }
+
+    .file-chip button {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 6px;
+    }
+
+    .file-chip button:hover { color: var(--error); background: rgba(217,45,32,.08); }
+
+    /* ─── Firma ────────────────────────────────────────────────── */
+    .signature-container {
+      background-color: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 10px;
+    }
+
+    .signature-container.is-invalid { border-color: var(--error); }
+
+    canvas.signature-pad {
+      width: 100%;
+      height: 165px;
+      border-radius: 11px;
+      touch-action: none;
+      cursor: crosshair;
+      background-color: #fcfbf8;
+      display: block;
+    }
+
+    .signature-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 7px;
+      padding: 0 4px;
+    }
+
+    .signature-actions span { font-size: 12.5px; color: var(--muted); }
+
+    .btn-clear {
+      background: none;
+      border: none;
+      color: var(--navy);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    /* ─── Consenso ─────────────────────────────────────────────── */
+    .consent-box {
+      background: #fcfbf8;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-top: 26px;
+    }
+
+    .consent-box.is-invalid { border-color: var(--error); background: var(--error-bg); }
+
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .checkbox-container input {
+      margin-top: 2px;
+      width: 19px;
+      height: 19px;
+      flex-shrink: 0;
+      cursor: pointer;
+      accent-color: var(--orange);
+    }
+
+    .checkbox-container label { margin-bottom: 0; font-weight: 500; }
+
+    .consent-box .checkbox-container + .checkbox-container { margin-top: 14px; }
+
+    .privacy-link-row { margin: 10px 0 0 30px; }
+
+    .privacy-link-row a {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      text-decoration: underline;
+    }
+
+    /* ─── Bottoni ──────────────────────────────────────────────── */
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .btn-action {
+      background-color: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      padding: 14px 30px;
+      font-size: 15.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color .2s, transform .1s;
+    }
+
+    .btn-action:hover { background-color: var(--navy-deep); }
+    .btn-action:active { transform: scale(.985); }
+
+    .btn-primary { background-color: var(--orange); }
+    .btn-primary:hover { background-color: var(--orange-deep); }
+
+    .btn-secondary { background-color: transparent; color: var(--navy); border: 1.5px solid var(--line); }
+    .btn-secondary:hover { background-color: #f4f2ed; }
+
+    .support-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    .support-note a { color: var(--navy); font-weight: 600; text-decoration: underline; }
+
+    /* ─── Banner errore globale (sostituisce gli alert) ────────── */
+    .global-error {
+      display: none;
+      background: var(--error-bg);
+      border: 1.5px solid rgba(217,45,32,.4);
+      border-left: 5px solid var(--error);
+      border-radius: 14px;
+      padding: 14px 17px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #8c1d18;
+      line-height: 1.5;
+      font-weight: 600;
+    }
+
+    .global-error.show { display: block; animation: nudge .35s ease; }
+
+    @keyframes nudge {
+      0%,100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* ─── Overlay ──────────────────────────────────────────────── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,27,80,.82);
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: var(--white);
+      text-align: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      backdrop-filter: blur(0px) saturate(100%);
+      -webkit-backdrop-filter: blur(0px) saturate(100%);
+      transition: opacity .4s cubic-bezier(.22,1,.36,1),
+                  backdrop-filter .4s cubic-bezier(.22,1,.36,1),
+                  -webkit-backdrop-filter .4s cubic-bezier(.22,1,.36,1),
+                  visibility 0s linear .4s;
+    }
+    .overlay.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
+      transition: opacity .4s cubic-bezier(.22,1,.36,1),
+                  backdrop-filter .4s cubic-bezier(.22,1,.36,1),
+                  -webkit-backdrop-filter .4s cubic-bezier(.22,1,.36,1),
+                  visibility 0s linear 0s;
+    }
+
+    .overlay-content {
+      transform: scale(.94) translateY(6px);
+      opacity: 0;
+      transition: transform .45s cubic-bezier(.22,1,.36,1), opacity .35s ease-out;
+    }
+    .overlay.show .overlay-content {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    /* Impulso concentrico — richiama il colpo su una pelle di percussione:
+       comunica attesa senza il classico anello che gira. */
+    .pulse-loader {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pulse-core {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--orange);
+      box-shadow: 0 0 16px rgba(239,145,0,.7);
+      animation: pulseCore 1.8s cubic-bezier(.4,0,.2,1) infinite;
+    }
+    .pulse-ring {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--orange);
+      opacity: 0;
+      animation: pulseRing 1.8s cubic-bezier(.16,1,.3,1) infinite;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: .6s; }
+    .pulse-ring:nth-child(3) { animation-delay: 1.2s; }
+
+    @keyframes pulseRing {
+      0%   { width: 16px; height: 16px; opacity: .65; border-color: var(--orange); }
+      100% { width: 64px; height: 64px; opacity: 0; border-color: rgba(255,255,255,.15); }
+    }
+    @keyframes pulseCore {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.15); }
+    }
+
+    .overlay p { font-size: 16px; font-weight: 600; }
+    .overlay small { font-size: 13.5px; opacity: .8; margin-top: 6px; display: block; }
+
+    .progress-track {
+      width: 240px;
+      max-width: 80vw;
+      height: 6px;
+      background: rgba(255,255,255,.25);
+      border-radius: 999px;
+      margin-top: 20px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--orange);
+      border-radius: 999px;
+      transition: width .4s cubic-bezier(.22,1,.36,1);
+    }
+
+    .progress-label { margin-top: 9px; opacity: .85; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .overlay { transition: opacity .25s ease; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+      .overlay-content { transition: opacity .25s ease; transform: none !important; }
+      .pulse-ring { animation: none !important; opacity: 0; }
+      .pulse-core { animation: pulseCoreReduced 1.6s ease-in-out infinite; }
+    }
+    @keyframes pulseCoreReduced { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+
+    /* ─── Bozza salvata ────────────────────────────────────────── */
+    .draft-banner {
+      display: none;
+      background: var(--orange-soft);
+      border: 1.5px solid rgba(239,145,0,.4);
+      border-radius: 16px;
+      padding: 16px 18px;
+      margin-bottom: 22px;
+    }
+
+    .draft-banner strong { display: block; font-size: 14.5px; color: var(--navy); }
+
+    .draft-banner p { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 5px 0 0; }
+
+    .draft-banner-actions { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+
+    .draft-banner-actions .btn-action { padding: 10px 18px; font-size: 13.5px; }
+
+    /* ─── Schermata finale ─────────────────────────────────────── */
+    .thank-you-box { display: none; text-align: center; padding: 12px 4px; }
+
+    .ty-badge {
+      width: 66px; height: 66px;
+      border-radius: 50%;
+      background: var(--orange-soft);
+      border: 2px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 18px;
+      animation: pop .45s cubic-bezier(.2,1.5,.4,1);
+    }
+
+    @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .thank-you-box h2 {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      margin-bottom: 10px;
+    }
+
+    .thank-you-box > p {
+      font-size: 15.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 48ch;
+      margin: 0 auto 26px;
+    }
+
+    .timeline {
+      text-align: left;
+      max-width: 430px;
+      margin: 0 auto 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tl-item { display: flex; gap: 13px; align-items: flex-start; }
+
+    .tl-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: var(--white);
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tl-text { font-size: 14px; line-height: 1.5; color: var(--muted); }
+    .tl-text b { color: var(--navy); display: block; font-size: 14.5px; margin-bottom: 2px; }
+
+    .id-badge {
+      display: inline-block;
+      background: var(--orange-soft);
+      border: 1px dashed var(--orange);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+
+    /* ─── Mobile ───────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .grid-2, .role-grid { grid-template-columns: 1fr; }
+      .card-body { padding: 24px 18px 26px; }
+      .topbar { padding: 12px 18px; }
+      .form-letterhead { flex-direction: column; text-align: center; }
+      .form-buttons { flex-direction: column-reverse; }
+      .form-buttons .btn-action { width: 100%; }
+      .steps { font-size: 11.5px; gap: 6px; }
+      .step-sep { width: 12px; }
+      /* su schermo stretto la topbar va a capo: il selettore lingua resta a destra */
+      .lang-select { margin-left: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-wrapper">
+
+  <!-- ═══ Intestazione associativa ═══ -->
+  <div class="form-letterhead">
+    <img src="{{LOGO_URL}}" class="letterhead-logo" alt="Logo {{NOME_GRUPPO}}">
+    <div>
+      <div class="letterhead-name">{{NOME_LEGALE}}</div>
+      <div class="letterhead-details">
+        Sede operativa: {{SEDE_LEGALE}} &middot;
+        Tel: {{TELEFONO_ENTE}} &middot; Web: {{SITO_WEB}} &middot;
+        C.F./P.Iva: {{CF}} &middot; DUNS Number: {{DUNS_ENTE}}
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <!-- ═══ Barra: avanzamento + lingua ═══ -->
+    <div class="topbar">
+      <div class="steps" id="stepsBar">
+        <span class="step-dot active" data-step="1"><span class="bullet">1</span><span data-i18n="step_1">Chi sei</span></span>
+        <span class="step-sep"></span>
+        <span class="step-dot" data-step="2"><span class="bullet">2</span><span data-i18n="step_2">I tuoi dati</span></span>
+        <span class="step-sep"></span>
+        <span class="step-dot" data-step="3"><span class="bullet">3</span><span data-i18n="step_3">Fatto</span></span>
+      </div>
+      <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+        <option value="it" selected>🇮🇹 Italiano</option>
+        <option value="en">🇺🇸 English (US)</option>
+        <option value="en-UK">🇬🇧 English (UK)</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="zh-CN">🇨🇳 简体中文</option>
+      </select>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Banner errori (sostituisce completamente gli alert del browser) -->
+      <div id="globalError" class="global-error"></div>
+
+      <!-- ═══ STEP 1 — Scelta ruolo ═══ -->
+      <div id="step1">
+        <div class="draft-banner" id="draftBanner">
+          <strong data-i18n="draft_title">Hai una domanda in corso</strong>
+          <p data-i18n="draft_note">Abbiamo trovato i dati di una domanda che avevi iniziato a compilare su questo dispositivo. Dovrai solo ricaricare i documenti e rifare la firma.</p>
+          <div class="draft-banner-actions">
+            <button type="button" class="btn-action btn-primary" onclick="resumeDraft()" data-i18n="draft_resume">Riprendi</button>
+            <button type="button" class="btn-action btn-secondary" onclick="discardDraft()" data-i18n="draft_discard">Ricomincia da zero</button>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2 data-i18n="role_question">Prima di tutto: chi sta scrivendo?</h2>
+          <p data-i18n="role_help">Scegli il profilo che ti corrisponde. Cambia solo quello che ti chiederemo dopo.</p>
+        </div>
+
+        <div class="role-grid">
+          <button type="button" class="role-card" id="roleCardOrd" onclick="selectRole('Socio Ordinario')">
+            <span class="role-emoji">🥁</span>
+            <div class="role-title" data-i18n="role_ord_title">Socio Ordinario</div>
+            <div class="role-desc" data-i18n="role_ord_desc">Hai 18 anni compiuti. Sei un musicista adulto, oppure il genitore/tutore di un ragazzo che vuole suonare con noi.</div>
+          </button>
+
+          <button type="button" class="role-card" id="roleCardMin" onclick="selectRole('Volontario Minorenne')">
+            <span class="role-emoji">🎶</span>
+            <div class="role-title" data-i18n="role_min_title">Volontario Minorenne</div>
+            <div class="role-desc" data-i18n="role_min_desc">Hai meno di 18 anni. La richiesta la compila e la firma un genitore o tutore, che deve essere già Socio Ordinario.</div>
+          </button>
+        </div>
+        <div class="err" id="err_role"></div>
+
+        <div class="form-buttons" style="justify-content:flex-end;">
+          <button type="button" class="btn-action btn-primary" onclick="goToStep2()" data-i18n="btn_next">Continua</button>
+        </div>
+      </div>
+
+      <!-- ═══ STEP 2A — Volontario minorenne ═══ -->
+      <div id="stepMinor" style="display:none;">
+        <div class="section-head">
+          <h2 data-i18n="header_minor_title">Il primo passo lo fate in due</h2>
+          <p data-i18n="header_minor_sub">Per iscrivere un ragazzo minorenne serve un genitore o tutore già iscritto come Socio Ordinario: è lui a firmare la richiesta e a garantire per il minore.</p>
+        </div>
+
+        <div class="block-title" data-i18n="block_parent">Il genitore o tutore</div>
+        <div class="block-sub" data-i18n="block_parent_sub">Chi accompagna il ragazzo e si assume la responsabilità della richiesta.</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="parentFirstName"><span data-i18n="parent_first_name">Nome del genitore/tutore</span><span class="req">*</span></label>
+            <input type="text" id="parentFirstName" placeholder="Mario" autocomplete="given-name">
+            <div class="err" id="err_parentFirstName"></div>
+          </div>
+          <div class="field">
+            <label for="parentLastName"><span data-i18n="parent_last_name">Cognome del genitore/tutore</span><span class="req">*</span></label>
+            <input type="text" id="parentLastName" placeholder="Rossi" autocomplete="family-name">
+            <div class="err" id="err_parentLastName"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="parentEmail"><span data-i18n="parent_email">Email del genitore/tutore</span><span class="req">*</span></label>
+            <input type="email" id="parentEmail" placeholder="mario.rossi@esempio.it" autocomplete="email" inputmode="email">
+            <span class="hint" data-i18n="hint_email">{{NOME_LEGALE}} la risposta della Presidenza.</span>
+            <div class="err" id="err_parentEmail"></div>
+          </div>
+          <div class="field">
+            <label for="parentPhone"><span data-i18n="parent_phone">Telefono del genitore/tutore</span><span class="req">*</span></label>
+            <div class="phone-row">
+              <input type="text" id="parentPhonePrefix" value="+39" inputmode="tel" aria-label="Prefisso">
+              <input type="tel" id="parentPhone" placeholder="333 123 4567" inputmode="tel" autocomplete="tel">
+            </div>
+            <div class="err" id="err_parentPhone"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="parentCF"><span data-i18n="parent_cf">Codice Fiscale del genitore/tutore</span><span class="req">*</span></label>
+            <input type="text" id="parentCF" placeholder="RSSMRA95E05F205Z" maxlength="16" autocapitalize="characters" spellcheck="false">
+            <div class="err" id="err_parentCF"></div>
+          </div>
+          <div class="field">
+            <label for="parentIdPratica"><span data-i18n="parent_id_pratica">ID Pratica del genitore</span></label>
+            <input type="text" id="parentIdPratica" placeholder="PR-00001" maxlength="8" spellcheck="false">
+            <span class="hint" data-i18n="hint_id_pratica">Facoltativo. Lo trovi nelle email che abbiamo inviato al genitore: ci aiuta a collegare subito le due posizioni.</span>
+            <div class="err" id="err_parentIdPratica"></div>
+          </div>
+        </div>
+
+        <div class="block-title" data-i18n="block_vol">Il giovane musicista</div>
+        <div class="block-sub" data-i18n="block_vol_sub">I dati del ragazzo o della ragazza che entrerà nell'Associazione.</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="volFirstName"><span data-i18n="vol_first_name">Nome</span><span class="req">*</span></label>
+            <input type="text" id="volFirstName" placeholder="Marco">
+            <div class="err" id="err_volFirstName"></div>
+          </div>
+          <div class="field">
+            <label for="volLastName"><span data-i18n="vol_last_name">Cognome</span><span class="req">*</span></label>
+            <input type="text" id="volLastName" placeholder="Rossi">
+            <div class="err" id="err_volLastName"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label><span data-i18n="label_sesso">Sesso</span><span class="req">*</span></label>
+            <div class="sesso-toggle" id="sesso_sessoVolontario">
+              <button type="button" class="sesso-btn" data-value="M" onclick="setSesso('sessoVolontario','M')"><span data-i18n="opt_m">Maschio</span></button>
+              <button type="button" class="sesso-btn" data-value="F" onclick="setSesso('sessoVolontario','F')"><span data-i18n="opt_f">Femmina</span></button>
+            </div>
+            <input type="hidden" id="sessoVolontario" data-choice="true">
+            <div class="err" id="err_sessoVolontario"></div>
+          </div>
+          <div class="field">
+            <label for="cfVolontario"><span data-i18n="label_cf">Codice Fiscale</span><span class="req">*</span></label>
+            <input type="text" id="cfVolontario" placeholder="RSSMRC10A01H501D" maxlength="16" autocapitalize="characters" spellcheck="false">
+            <div class="err" id="err_cfVolontario"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="dataNascitaVolontario"><span data-i18n="label_data_nascita">Data di nascita</span><span class="req">*</span></label>
+            <input type="date" id="dataNascitaVolontario">
+            <div class="err" id="err_dataNascitaVolontario"></div>
+          </div>
+          <div class="field">
+            <label for="volEmail"><span data-i18n="vol_email">Email del ragazzo</span></label>
+            <input type="email" id="volEmail" placeholder="marco.rossi@esempio.it" inputmode="email">
+            <span class="hint" data-i18n="hint_vol_email">Facoltativa.</span>
+            <div class="err" id="err_volEmail"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="volPhone"><span data-i18n="vol_phone">Telefono del ragazzo</span></label>
+          <div class="phone-row">
+            <input type="text" id="volPhonePrefix" value="+39" inputmode="tel" aria-label="Prefisso">
+            <input type="tel" id="volPhone" placeholder="333 765 4321" inputmode="tel">
+          </div>
+          <span class="hint" data-i18n="hint_vol_phone">Facoltativo.</span>
+          <div class="err" id="err_volPhone"></div>
+        </div>
+
+        <div class="field">
+          <label for="musicSkills"><span data-i18n="music_skills">Raccontaci qualcosa di lui/lei</span></label>
+          <textarea id="musicSkills" data-i18n-ph="ph_skills" placeholder="Suona già uno strumento? Da quanto tempo? Cosa gli piace ascoltare? Anche due righe ci bastano — ci aiuta a farlo sentire subito al posto giusto."></textarea>
+        </div>
+
+        <div class="block-title" data-i18n="block_docs">I documenti</div>
+        <div class="block-sub" data-i18n="block_docs_sub_minor">Ci servono per iscrivervi correttamente nel libro soci. Li vede solo la Presidenza, restano in un archivio riservato e non vengono condivisi con nessuno.</div>
+
+        <div class="field">
+          <label><span data-i18n="upload_parent_id">Documento d'identità del genitore/tutore</span><span class="req">*</span></label>
+          <div class="dropzone" id="dz_fileParentId">
+            <input type="file" id="fileParentId" accept="image/jpeg,image/png,image/heic,application/pdf" multiple onchange="onFilesPicked(this)">
+            <div class="dz-icon">🪪</div>
+            <div class="dz-main" data-i18n="file_drop">Trascina qui i file o tocca per sceglierli</div>
+            <div class="dz-hint" data-i18n="file_hint">Fronte e retro · max 2 file · fino a 15 MB in totale · JPG, PNG o PDF</div>
+          </div>
+          <div class="file-chips" id="chips_fileParentId"></div>
+          <div class="err" id="err_fileParentId"></div>
+        </div>
+
+        <div class="field">
+          <label><span data-i18n="upload_vol_id">Documento d'identità del ragazzo</span><span class="req">*</span></label>
+          <div class="dropzone" id="dz_fileVolId">
+            <input type="file" id="fileVolId" accept="image/jpeg,image/png,image/heic,application/pdf" multiple onchange="onFilesPicked(this)">
+            <div class="dz-icon">🪪</div>
+            <div class="dz-main" data-i18n="file_drop">Trascina qui i file o tocca per sceglierli</div>
+            <div class="dz-hint" data-i18n="file_hint">Fronte e retro · max 2 file · fino a 15 MB in totale · JPG, PNG o PDF</div>
+          </div>
+          <div class="file-chips" id="chips_fileVolId"></div>
+          <div class="err" id="err_fileVolId"></div>
+        </div>
+
+        <div class="block-title" data-i18n="block_sign">La firma</div>
+        <div class="block-sub" data-i18n="block_sign_sub_minor">Firma il genitore o tutore, con il dito sullo schermo o con il mouse.</div>
+
+        <div class="field">
+          <div class="signature-container" id="sig_canvasMinor">
+            <canvas id="canvasMinor" class="signature-pad"></canvas>
+            <div class="signature-actions">
+              <span data-i18n="sign_hint">Firma qui sopra</span>
+              <button type="button" class="btn-clear" onclick="clearCanvas('canvasMinor')" data-i18n="btn_clear">Cancella</button>
+            </div>
+          </div>
+          <div class="err" id="err_canvasMinor"></div>
+        </div>
+
+        <div class="consent-box" id="cons_tcMinor">
+          <div class="checkbox-container">
+            <input type="checkbox" id="tcMinor">
+            <label for="tcMinor"><span data-i18n="tc_label">Ho letto e accetto lo Statuto, i Termini e Condizioni e l'Informativa sulla Privacy di {{NOME_LEGALE}}, anche per conto del minore che rappresento.</span><span class="req">*</span></label>
+          </div>
+          <div class="privacy-link-row">
+            <a href="https://{{DOMINIO}}/privacy/" target="_blank" rel="noopener" data-i18n="privacy_link_text">Leggi l'Informativa sulla Privacy</a>
+          </div>
+          <div class="err" id="err_tcMinor"></div>
+        </div>
+
+        <div class="block-title" data-i18n="block_media">Foto e video</div>
+        <div class="block-sub" data-i18n="block_media_sub_minor">Facoltativo, e non condiziona l'iscrizione: puoi scegliere se autorizzare l'uso delle immagini del minore che rappresenti, e revocare il consenso quando vuoi scrivendo a {{EMAIL_MITTENTE}}.</div>
+
+        <div class="consent-box">
+          <div class="checkbox-container">
+            <input type="checkbox" id="libSitoMinor">
+            <label for="libSitoMinor"><span data-i18n="lib_sito">Sul sito web dell'Associazione ({{DOMINIO}})</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libSocialMinor">
+            <label for="libSocialMinor"><span data-i18n="lib_social">Sui canali social dell'Associazione (Instagram, Facebook, YouTube e simili)</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libStampaMinor">
+            <label for="libStampaMinor"><span data-i18n="lib_stampa">Su materiale promozionale stampato (locandine, brochure, comunicati stampa)</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libVideoMinor">
+            <label for="libVideoMinor"><span data-i18n="lib_video">In video promozionali dell'attività associativa</span></label>
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="button" class="btn-action btn-secondary" onclick="goBackToStep1()" data-i18n="btn_back">Indietro</button>
+          <button type="button" class="btn-action btn-primary" onclick="submitForm('Volontario')" data-i18n="btn_submit_minor">Invia la richiesta</button>
+        </div>
+        <p class="support-note">
+          <span data-i18n="support_note">Hai problemi con l'invio della domanda? Contattaci a</span>
+          <a href="/cdn-cgi/l/email-protection#9ae1e1dfd7dbd3d6c5d7d3cecedfd4cedfe7e7">{{EMAIL_MITTENTE}}</a>
+        </p>
+      </div>
+
+      <!-- ═══ STEP 2B — Socio Ordinario ═══ -->
+      <div id="stepOrdinary" style="display:none;">
+        <div class="section-head">
+          <h2 data-i18n="header_ord_title">Bene. Adesso raccontaci chi sei.</h2>
+          <p data-i18n="header_ord_sub">Sono i dati che finiranno nel libro soci dell'Associazione: prenditi un minuto per controllarli.</p>
+        </div>
+
+        <div class="global-error show" style="background:var(--orange-soft);border-color:rgba(239,145,0,.45);border-left-color:var(--orange);color:var(--orange-deep);" data-i18n="header_ord_payment_note">Qui non paghi nulla. Se la Presidenza approva la tua domanda, ti arriverà un'email con il pulsante per completare l'iscrizione e versare la quota.</div>
+
+        <div class="block-title" data-i18n="block_you">I tuoi dati</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="socioFirstName"><span data-i18n="socio_first_name">Nome</span><span class="req">*</span></label>
+            <input type="text" id="socioFirstName" placeholder="Mario" autocomplete="given-name">
+            <div class="err" id="err_socioFirstName"></div>
+          </div>
+          <div class="field">
+            <label for="socioLastName"><span data-i18n="socio_last_name">Cognome</span><span class="req">*</span></label>
+            <input type="text" id="socioLastName" placeholder="Rossi" autocomplete="family-name">
+            <div class="err" id="err_socioLastName"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="socioEmail"><span data-i18n="socio_email">La tua email</span><span class="req">*</span></label>
+            <input type="email" id="socioEmail" placeholder="mario.rossi@esempio.it" autocomplete="email" inputmode="email">
+            <span class="hint" data-i18n="hint_email">{{NOME_LEGALE}} la risposta della Presidenza.</span>
+            <div class="err" id="err_socioEmail"></div>
+          </div>
+          <div class="field">
+            <label for="socioPhone"><span data-i18n="socio_phone">Il tuo telefono</span><span class="req">*</span></label>
+            <div class="phone-row">
+              <input type="text" id="socioPhonePrefix" value="+39" inputmode="tel" aria-label="Prefisso">
+              <input type="tel" id="socioPhone" placeholder="333 123 4567" inputmode="tel" autocomplete="tel">
+            </div>
+            <div class="err" id="err_socioPhone"></div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label><span data-i18n="label_sesso">Sesso</span><span class="req">*</span></label>
+            <div class="sesso-toggle" id="sesso_sessoSocio">
+              <button type="button" class="sesso-btn" data-value="M" onclick="setSesso('sessoSocio','M')"><span data-i18n="opt_m">Maschio</span></button>
+              <button type="button" class="sesso-btn" data-value="F" onclick="setSesso('sessoSocio','F')"><span data-i18n="opt_f">Femmina</span></button>
+            </div>
+            <input type="hidden" id="sessoSocio" data-choice="true">
+            <div class="err" id="err_sessoSocio"></div>
+          </div>
+          <div class="field">
+            <label for="cfSocio"><span data-i18n="label_cf">Codice Fiscale</span><span class="req">*</span></label>
+            <input type="text" id="cfSocio" placeholder="RSSMRA95E05F205Z" maxlength="16" autocapitalize="characters" spellcheck="false">
+            <div class="err" id="err_cfSocio"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="dataNascitaSocio"><span data-i18n="label_data_nascita">Data di nascita</span><span class="req">*</span></label>
+          <input type="date" id="dataNascitaSocio">
+          <div class="err" id="err_dataNascitaSocio"></div>
+        </div>
+
+        <div class="block-title" data-i18n="block_docs">I documenti</div>
+        <div class="block-sub" data-i18n="block_docs_sub_ord">Ci serve per iscriverti correttamente nel libro soci. Lo vede solo la Presidenza, resta in un archivio riservato e non viene condiviso con nessuno.</div>
+
+        <div class="field">
+          <label><span data-i18n="upload_socio_id">Il tuo documento d'identità</span><span class="req">*</span></label>
+          <div class="dropzone" id="dz_fileSocioId">
+            <input type="file" id="fileSocioId" accept="image/jpeg,image/png,image/heic,application/pdf" multiple onchange="onFilesPicked(this)">
+            <div class="dz-icon">🪪</div>
+            <div class="dz-main" data-i18n="file_drop">Trascina qui i file o tocca per sceglierli</div>
+            <div class="dz-hint" data-i18n="file_hint">Fronte e retro · max 2 file · fino a 15 MB in totale · JPG, PNG o PDF</div>
+          </div>
+          <div class="file-chips" id="chips_fileSocioId"></div>
+          <div class="err" id="err_fileSocioId"></div>
+        </div>
+
+        <div class="block-title" data-i18n="block_sign">La firma</div>
+        <div class="block-sub" data-i18n="block_sign_sub_ord">Firma con il dito sullo schermo o con il mouse: vale come sottoscrizione della domanda.</div>
+
+        <div class="field">
+          <div class="signature-container" id="sig_canvasOrdinary">
+            <canvas id="canvasOrdinary" class="signature-pad"></canvas>
+            <div class="signature-actions">
+              <span data-i18n="sign_hint">Firma qui sopra</span>
+              <button type="button" class="btn-clear" onclick="clearCanvas('canvasOrdinary')" data-i18n="btn_clear">Cancella</button>
+            </div>
+          </div>
+          <div class="err" id="err_canvasOrdinary"></div>
+        </div>
+
+        <div class="consent-box" id="cons_tcOrdinary">
+          <div class="checkbox-container">
+            <input type="checkbox" id="tcOrdinary">
+            <label for="tcOrdinary"><span data-i18n="tc_label_ord">Ho letto e accetto lo Statuto, i Termini e Condizioni e l'Informativa sulla Privacy di {{NOME_LEGALE}}.</span><span class="req">*</span></label>
+          </div>
+          <div class="privacy-link-row">
+            <a href="https://{{DOMINIO}}/privacy/" target="_blank" rel="noopener" data-i18n="privacy_link_text">Leggi l'Informativa sulla Privacy</a>
+          </div>
+          <div class="err" id="err_tcOrdinary"></div>
+        </div>
+
+        <div class="block-title" data-i18n="block_media">Foto e video</div>
+        <div class="block-sub" data-i18n="block_media_sub_ord">Facoltativo, e non condiziona l'iscrizione: puoi scegliere se autorizzare l'uso delle tue immagini, e revocare il consenso quando vuoi scrivendo a {{EMAIL_MITTENTE}}.</div>
+
+        <div class="consent-box">
+          <div class="checkbox-container">
+            <input type="checkbox" id="libSitoOrd">
+            <label for="libSitoOrd"><span data-i18n="lib_sito">Sul sito web dell'Associazione ({{DOMINIO}})</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libSocialOrd">
+            <label for="libSocialOrd"><span data-i18n="lib_social">Sui canali social dell'Associazione (Instagram, Facebook, YouTube e simili)</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libStampaOrd">
+            <label for="libStampaOrd"><span data-i18n="lib_stampa">Su materiale promozionale stampato (locandine, brochure, comunicati stampa)</span></label>
+          </div>
+          <div class="checkbox-container">
+            <input type="checkbox" id="libVideoOrd">
+            <label for="libVideoOrd"><span data-i18n="lib_video">In video promozionali dell'attività associativa</span></label>
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="button" class="btn-action btn-secondary" onclick="goBackToStep1()" data-i18n="btn_back">Indietro</button>
+          <button type="button" class="btn-action btn-primary" onclick="submitForm('Socio Ordinario')" data-i18n="btn_submit_ord">Invia la richiesta</button>
+        </div>
+        <p class="support-note">
+          <span data-i18n="support_note">Hai problemi con l'invio della domanda? Contattaci a</span>
+          <a href="/cdn-cgi/l/email-protection#4e35350b030f07021103071a1a0b001a0b3333">{{EMAIL_MITTENTE}}</a>
+        </p>
+      </div>
+
+      <!-- ═══ STEP 3 — Conferma ═══ -->
+      <div id="thankYouBox" class="thank-you-box">
+        <div class="ty-badge">🥁</div>
+        <h2 data-i18n="ty_title">Ci siamo. La tua richiesta è partita.</h2>
+        <p data-i18n="ty_sub">Da questo momento la palla passa a noi. La Presidenza legge personalmente ogni domanda: non è un processo automatico, e per questo richiede qualche giorno.</p>
+
+        <div class="id-badge" id="idPraticaBadge" style="display:none;"></div>
+
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-num">1</div>
+            <div class="tl-text"><b data-i18n="ty_t1_title">Email di conferma</b><span data-i18n="ty_t1_text">Tra pochi minuti ricevi il riepilogo della domanda con il tuo ID Pratica. Se non lo vedi, controlla lo spam.</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num">2</div>
+            <div class="tl-text"><b data-i18n="ty_t2_title">La Presidenza valuta</b><span data-i18n="ty_t2_text">Riceverai l'esito via email, con tutte le indicazioni per il passo successivo.</span></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-num">3</div>
+            <div class="tl-text"><b data-i18n="ty_t3_title">Benvenuto in {{NOME_GRUPPO}}</b><span data-i18n="ty_t3_text">Una volta completata l'iscrizione ricevi il tuo account istituzionale e la tessera associativa.</span></div>
+          </div>
+        </div>
+
+        <a href="https://{{SITO_WEB}}" target="_blank" rel="noopener" class="btn-action btn-primary" style="text-decoration:none;display:inline-block;" data-i18n="btn_site">Torna da noi.</a>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /form-card -->
+</div><!-- /form-wrapper -->
+
+<!-- Overlay di invio -->
+<div id="loadingOverlay" class="overlay" role="status" aria-live="polite">
+  <div class="overlay-content">
+    <div class="pulse-loader" aria-hidden="true">
+      <span class="pulse-ring"></span>
+      <span class="pulse-ring"></span>
+      <span class="pulse-ring"></span>
+      <span class="pulse-core"></span>
+    </div>
+    <p data-i18n="loading_text">Stiamo inviando la tua richiesta…</p>
+    <small data-i18n="loading_sub">Non chiudere questa pagina: il caricamento dei documenti può richiedere qualche secondo.</small>
+    <div class="progress-track"><div class="progress-fill" id="uploadProgressBar"></div></div>
+    <small class="progress-label" id="uploadProgressLabel"></small>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  /* ══════════════════════════════════════════════════════════════
+     TRADUZIONI
+     ══════════════════════════════════════════════════════════════ */
+  const translations = {
+    it: {
+      step_1: "Chi sei", step_2: "I tuoi dati", step_3: "Fatto",
+      role_question: "Prima di tutto: chi sta scrivendo?",
+      role_help: "Scegli il profilo che ti corrisponde. Cambia solo quello che ti chiederemo dopo.",
+      role_ord_title: "Socio Ordinario",
+      role_ord_desc: "Hai 18 anni compiuti. Sei un musicista adulto, oppure il genitore/tutore di un ragazzo che vuole suonare con noi.",
+      role_min_title: "Volontario Minorenne",
+      role_min_desc: "Hai meno di 18 anni. La richiesta la compila e la firma un genitore o tutore, che deve essere già Socio Ordinario.",
+      btn_next: "Continua", btn_back: "Indietro",
+      btn_submit_minor: "Invia la richiesta", btn_submit_ord: "Invia la richiesta",
+      btn_clear: "Cancella", btn_site: "Torna su {{DOMINIO}}",
+      header_minor_title: "Il primo passo lo fate in due",
+      header_minor_sub: "Per iscrivere un ragazzo minorenne serve un genitore o tutore già iscritto come Socio Ordinario: è lui a firmare la richiesta e a garantire per il minore.",
+      block_parent: "Il genitore o tutore",
+      block_parent_sub: "Chi accompagna il ragazzo e si assume la responsabilità della richiesta.",
+      block_vol: "Il giovane musicista",
+      block_vol_sub: "I dati del ragazzo o della ragazza che entrerà nell'Associazione.",
+      block_you: "I tuoi dati",
+      block_docs: "I documenti",
+      block_docs_sub_minor: "Ci servono per iscrivervi correttamente nel libro soci. Li vede solo la Presidenza, restano in un archivio riservato e non vengono condivisi con nessuno.",
+      block_docs_sub_ord: "Ci serve per iscriverti correttamente nel libro soci. Lo vede solo la Presidenza, resta in un archivio riservato e non viene condiviso con nessuno.",
+      block_sign: "La firma",
+      block_sign_sub_minor: "Firma il genitore o tutore, con il dito sullo schermo o con il mouse.",
+      block_sign_sub_ord: "Firma con il dito sullo schermo o con il mouse: vale come sottoscrizione della domanda.",
+      sign_hint: "Firma qui sopra",
+      parent_first_name: "Nome del genitore/tutore", parent_last_name: "Cognome del genitore/tutore",
+      parent_email: "Email del genitore/tutore", parent_phone: "Telefono del genitore/tutore",
+      parent_cf: "Codice Fiscale del genitore/tutore", parent_id_pratica: "ID Pratica del genitore",
+      vol_first_name: "Nome", vol_last_name: "Cognome",
+      vol_email: "Email del ragazzo", vol_phone: "Telefono del ragazzo",
+      upload_parent_id: "Documento d'identità del genitore/tutore",
+      upload_vol_id: "Documento d'identità del ragazzo",
+      upload_socio_id: "Il tuo documento d'identità",
+      music_skills: "Raccontaci qualcosa di lui/lei",
+      ph_skills: "Suona già uno strumento? Da quanto tempo? Cosa gli piace ascoltare? Anche due righe ci bastano — ci aiuta a farlo sentire subito al posto giusto.",
+      tc_label: "Ho letto e accetto lo Statuto, i Termini e Condizioni e l'Informativa sulla Privacy di {{NOME_LEGALE}}, anche per conto del minore che rappresento.",
+      tc_label_ord: "Ho letto e accetto lo Statuto, i Termini e Condizioni e l'Informativa sulla Privacy di {{NOME_LEGALE}}.",
+      privacy_link_text: "Leggi l'Informativa sulla Privacy",
+      block_media: "Foto e video",
+      block_media_sub_minor: "Facoltativo, e non condiziona l'iscrizione: puoi scegliere se autorizzare l'uso delle immagini del minore che rappresenti, e revocare il consenso quando vuoi scrivendo a {{EMAIL_MITTENTE}}.",
+      block_media_sub_ord: "Facoltativo, e non condiziona l'iscrizione: puoi scegliere se autorizzare l'uso delle tue immagini, e revocare il consenso quando vuoi scrivendo a {{EMAIL_MITTENTE}}.",
+      lib_sito: "Sul sito web dell'Associazione ({{DOMINIO}})",
+      lib_social: "Sui canali social dell'Associazione (Instagram, Facebook, YouTube e simili)",
+      lib_stampa: "Su materiale promozionale stampato (locandine, brochure, comunicati stampa)",
+      lib_video: "In video promozionali dell'attività associativa",
+      label_sesso: "Sesso", opt_select: "Seleziona", opt_m: "Maschio", opt_f: "Femmina",
+      label_cf: "Codice Fiscale", label_data_nascita: "Data di nascita",
+      header_ord_title: "Bene. Adesso raccontaci chi sei.",
+      header_ord_sub: "Sono i dati che finiranno nel libro soci dell'Associazione: prenditi un minuto per controllarli.",
+      header_ord_payment_note: "Qui non paghi nulla. Se la Presidenza approva la tua domanda, ti arriverà un'email con il pulsante per completare l'iscrizione e versare la quota.",
+      socio_first_name: "Nome", socio_last_name: "Cognome",
+      socio_email: "La tua email", socio_phone: "Il tuo telefono",
+      hint_email: "{{NOME_LEGALE}} la risposta della Presidenza.",
+      hint_id_pratica: "Facoltativo. Lo trovi nelle email che abbiamo inviato al genitore: ci aiuta a collegare subito le due posizioni.",
+      hint_vol_email: "Facoltativa.", hint_vol_phone: "Facoltativo.",
+      file_drop: "Trascina qui i file o tocca per sceglierli",
+      file_hint: "Fronte e retro · max 2 file · fino a 15 MB in totale · JPG, PNG o PDF",
+      loading_text: "Stiamo inviando la tua richiesta…",
+      loading_sub: "Non chiudere questa pagina: il caricamento dei documenti può richiedere qualche secondo.",
+      ty_title: "Ci siamo. La tua richiesta è partita.",
+      ty_sub: "Da questo momento la palla passa a noi. La Presidenza legge personalmente ogni domanda: non è un processo automatico, e per questo richiede qualche giorno.",
+      ty_t1_title: "Email di conferma",
+      ty_t1_text: "Tra pochi minuti ricevi il riepilogo della domanda con il tuo ID Pratica. Se non lo vedi, controlla lo spam.",
+      ty_t2_title: "La Presidenza valuta",
+      ty_t2_text: "Riceverai l'esito via email, con tutte le indicazioni per il passo successivo.",
+      ty_t3_title: "Benvenuto in {{NOME_GRUPPO}}",
+      ty_t3_text: "Una volta completata l'iscrizione ricevi il tuo account istituzionale e la tessera associativa.",
+      /* errori */
+      err_summary: "Manca ancora qualcosa: ti abbiamo evidenziato in rosso i campi da sistemare.",
+      err_role: "Scegli uno dei due profili per continuare.",
+      err_required: "Questo campo è obbligatorio.",
+      err_select: "Scegli un'opzione.",
+      err_short: "Scrivi almeno 2 caratteri.",
+      err_email: "Email non valida: serve il formato nome@dominio.it",
+      err_phone: "Numero non valido: servono da 6 a 15 cifre.",
+      err_prefix: "Prefisso non valido: usa il formato +39.",
+      err_cf_len: "Il Codice Fiscale ha 16 caratteri: ne mancano ancora {n}.",
+      err_cf_format: "Formato non valido. Il Codice Fiscale è tipo RSSMRA95E05F205Z.",
+      err_cf_check: "Questo Codice Fiscale non risulta corretto: ricontrolla, forse c'è un carattere sbagliato.",
+      err_idpratica: "L'ID Pratica ha il formato PR-00001 (le cifre le trovi nell'email).",
+      err_date: "Inserisci una data valida.",
+      err_date_minor: "Il volontario deve avere meno di 18 anni. Se ha già compiuto 18 anni, torna indietro e scegli \"Socio Ordinario\".",
+      err_date_adult: "Per iscriverti come Socio Ordinario devi essere maggiorenne. Se sei minorenne, torna indietro e scegli \"Volontario Minorenne\".",
+      err_file_required: "Carica il documento (fronte e retro).",
+      err_file_max: "Puoi caricare al massimo 2 file per ciascun documento.",
+      err_file_size: "I file superano il limite di 15 MB. Prova a fotografarli a risoluzione più bassa.",
+      err_file_type: "Formato non supportato: accettiamo JPG, PNG, HEIC o PDF.",
+      err_file_total: "In tutto stai caricando più di 25 MB: riduci il peso dei file per completare l'invio.",
+      err_sign: "Manca la firma: disegnala nello spazio qui sopra.",
+      err_tc: "Per proseguire devi accettare Statuto e Informativa Privacy.",
+      err_send: "Non siamo riusciti a inviare la richiesta. Riprova tra qualche minuto o scrivici a {{EMAIL_MITTENTE}}.",
+      chip_remove: "Rimuovi",
+      progress_files: "Preparazione file {done}/{total}",
+      progress_sending: "Invio alla Presidenza…",
+      draft_title: "Hai una domanda in corso",
+      draft_note: "Abbiamo trovato i dati di una domanda che avevi iniziato a compilare su questo dispositivo. Dovrai solo ricaricare i documenti e rifare la firma.",
+      draft_resume: "Riprendi",
+      draft_discard: "Ricomincia da zero",
+      support_note: "Hai problemi con l'invio della domanda? Contattaci a"
+    },
+    en: {
+      step_1: "About you", step_2: "Your details", step_3: "Done",
+      role_question: "First things first: who is writing?",
+      role_help: "Pick the profile that matches you. It only changes what we'll ask next.",
+      role_ord_title: "Regular Member",
+      role_ord_desc: "You are 18 or older. An adult musician, or the parent/guardian of a young person who wants to play with us.",
+      role_min_title: "Minor Volunteer",
+      role_min_desc: "You are under 18. The request is filled in and signed by a parent or guardian, who must already be a Regular Member.",
+      btn_next: "Continue", btn_back: "Back",
+      btn_submit_minor: "Send the request", btn_submit_ord: "Send the request",
+      btn_clear: "Clear", btn_site: "Back to {{DOMINIO}}",
+      header_minor_title: "This first step takes two of you",
+      header_minor_sub: "To register a minor, a parent or guardian must already be a Regular Member: they sign the request and vouch for the minor.",
+      block_parent: "The parent or guardian",
+      block_parent_sub: "The person who accompanies the young musician and takes responsibility for the request.",
+      block_vol: "The young musician",
+      block_vol_sub: "Details of the boy or girl joining the association.",
+      block_you: "Your details",
+      block_docs: "Documents",
+      block_docs_sub_minor: "We need them to register you correctly in the members' book. Only the Board sees them; they stay in a restricted archive and are never shared.",
+      block_docs_sub_ord: "We need it to register you correctly in the members' book. Only the Board sees it; it stays in a restricted archive and is never shared.",
+      block_sign: "Signature",
+      block_sign_sub_minor: "The parent or guardian signs, with a finger on the screen or with the mouse.",
+      block_sign_sub_ord: "Sign with your finger on the screen or with the mouse: it counts as signing the application.",
+      sign_hint: "Sign above",
+      parent_first_name: "Parent/Guardian first name", parent_last_name: "Parent/Guardian last name",
+      parent_email: "Parent/Guardian email", parent_phone: "Parent/Guardian phone",
+      parent_cf: "Parent/Guardian tax code", parent_id_pratica: "Parent's Application ID",
+      vol_first_name: "First name", vol_last_name: "Last name",
+      vol_email: "Young musician's email", vol_phone: "Young musician's phone",
+      upload_parent_id: "Parent/Guardian ID document",
+      upload_vol_id: "Young musician's ID document",
+      upload_socio_id: "Your ID document",
+      music_skills: "Tell us something about them",
+      ph_skills: "Do they already play an instrument? For how long? What do they listen to? Even two lines help us make them feel in the right place.",
+      tc_label: "I have read and accept the Statute, Terms & Conditions and Privacy Policy of {{NOME_LEGALE}}, also on behalf of the minor I represent.",
+      tc_label_ord: "I have read and accept the Statute, Terms & Conditions and Privacy Policy of {{NOME_LEGALE}}.",
+      privacy_link_text: "Read the Privacy Policy",
+      block_media: "Photos and videos",
+      block_media_sub_minor: "Optional, and it won't affect your application: you can choose whether to authorize use of images of the minor you represent, and withdraw consent anytime by emailing {{EMAIL_MITTENTE}}.",
+      block_media_sub_ord: "Optional, and it won't affect your application: you can choose whether to authorize use of your images, and withdraw consent anytime by emailing {{EMAIL_MITTENTE}}.",
+      lib_sito: "On the Association's website ({{DOMINIO}})",
+      lib_social: "On the Association's social media channels (Instagram, Facebook, YouTube and similar)",
+      lib_stampa: "In printed promotional material (posters, brochures, press releases)",
+      lib_video: "In promotional videos of the Association's activities",
+      label_sesso: "Sex", opt_select: "Select", opt_m: "Male", opt_f: "Female",
+      label_cf: "Tax code", label_data_nascita: "Date of birth",
+      header_ord_title: "Great. Now tell us who you are.",
+      header_ord_sub: "These details go into the Association's members' book: take a minute to check them.",
+      header_ord_payment_note: "You pay nothing here. If the Board approves your application, you'll get an email with a button to complete your membership and pay the fee.",
+      socio_first_name: "First name", socio_last_name: "Last name",
+      socio_email: "Your email", socio_phone: "Your phone",
+      hint_email: "This is where the Board's answer and all communications will arrive.",
+      hint_id_pratica: "Optional. You'll find it in the emails we sent the parent: it lets us link the two records straight away.",
+      hint_vol_email: "Optional.", hint_vol_phone: "Optional.",
+      file_drop: "Drag files here or tap to choose",
+      file_hint: "Front and back · max 2 files · up to 15 MB in total · JPG, PNG or PDF",
+      loading_text: "Sending your request…",
+      loading_sub: "Please don't close this page: uploading the documents may take a few seconds.",
+      ty_title: "That's it. Your request is on its way.",
+      ty_sub: "From now on it's up to us. The Board reads every application personally: it isn't automated, which is why it takes a few days.",
+      ty_t1_title: "Confirmation email",
+      ty_t1_text: "In a few minutes you'll get a summary with your Application ID. If you don't see it, check your spam folder.",
+      ty_t2_title: "The Board reviews it",
+      ty_t2_text: "You'll get the outcome by email, with everything you need for the next step.",
+      ty_t3_title: "Welcome to {{NOME_GRUPPO}}",
+      ty_t3_text: "Once membership is complete you receive your institutional account and your membership card.",
+      err_summary: "Something's still missing: we've highlighted in red what needs fixing.",
+      err_role: "Choose one of the two profiles to continue.",
+      err_required: "This field is required.",
+      err_select: "Please choose an option.",
+      err_short: "Please write at least 2 characters.",
+      err_email: "Invalid email: it should look like name@domain.com",
+      err_phone: "Invalid number: 6 to 15 digits are required.",
+      err_prefix: "Invalid country code: use the +39 format.",
+      err_cf_len: "The tax code is 16 characters long: {n} still missing.",
+      err_cf_format: "Invalid format. A tax code looks like RSSMRA95E05F205Z.",
+      err_cf_check: "This tax code doesn't check out: please review it, a character may be wrong.",
+      err_idpratica: "The Application ID looks like PR-00001 (the digits are in the email).",
+      err_date: "Please enter a valid date.",
+      err_date_minor: "The volunteer must be under 18. If they are already 18, go back and choose \"Regular Member\".",
+      err_date_adult: "To join as a Regular Member you must be 18 or older. If you are a minor, go back and choose \"Minor Volunteer\".",
+      err_file_required: "Please upload the document (front and back).",
+      err_file_max: "You can upload at most 2 files per document.",
+      err_file_size: "Files exceed the 15 MB limit. Try photographing them at a lower resolution.",
+      err_file_type: "Unsupported format: we accept JPG, PNG, HEIC or PDF.",
+      err_file_total: "You're uploading more than 25 MB in total: please reduce the file sizes.",
+      err_sign: "The signature is missing: draw it in the space above.",
+      err_tc: "You must accept the Statute and Privacy Policy to continue.",
+      err_send: "We couldn't send the request. Please try again in a few minutes or write to {{EMAIL_MITTENTE}}.",
+      chip_remove: "Remove",
+      progress_files: "Preparing files {done}/{total}",
+      progress_sending: "Sending to the Board…",
+      draft_title: "You have an application in progress",
+      draft_note: "We found the details of an application you started filling in on this device. You'll just need to re-upload the documents and sign again.",
+      draft_resume: "Resume",
+      draft_discard: "Start over",
+      support_note: "Having trouble sending your application? Contact us at"
+    },
+    "en-UK": {
+      step_1: "About you", step_2: "Your details", step_3: "Done",
+      role_question: "First things first: who is writing?",
+      role_help: "Choose the profile that matches you. It only changes what we ask next.",
+      role_ord_title: "Ordinary Member",
+      role_ord_desc: "You are 18 or over. An adult musician, or the parent/guardian of a young person who wants to play with us.",
+      role_min_title: "Minor Volunteer",
+      role_min_desc: "You are under 18. A parent or guardian fills in and signs the request, and must already be an Ordinary Member.",
+      btn_next: "Continue", btn_back: "Back",
+      btn_submit_minor: "Send the request", btn_submit_ord: "Send the request",
+      btn_clear: "Clear", btn_site: "Back to {{DOMINIO}}",
+      header_minor_title: "This first step takes two of you",
+      header_minor_sub: "To register a minor, a parent or guardian must already be an Ordinary Member: they sign the request and vouch for the minor.",
+      block_parent: "The parent or guardian",
+      block_parent_sub: "The person accompanying the young musician and taking responsibility for the request.",
+      block_vol: "The young musician", block_vol_sub: "Details of the young person joining the association.",
+      block_you: "Your details", block_docs: "Documents",
+      block_docs_sub_minor: "We need them to register you correctly in the members' book. Only the Board sees them; they stay in a restricted archive and are never shared.",
+      block_docs_sub_ord: "We need it to register you correctly in the members' book. Only the Board sees it; it stays in a restricted archive and is never shared.",
+      block_sign: "Signature",
+      block_sign_sub_minor: "The parent or guardian signs, with a finger on screen or with the mouse.",
+      block_sign_sub_ord: "Sign with your finger on screen or with the mouse: it counts as signing the application.",
+      sign_hint: "Sign above",
+      parent_first_name: "Parent/Guardian first name", parent_last_name: "Parent/Guardian surname",
+      parent_email: "Parent/Guardian email", parent_phone: "Parent/Guardian phone",
+      parent_cf: "Parent/Guardian tax code", parent_id_pratica: "Parent's Application ID",
+      vol_first_name: "First name", vol_last_name: "Surname",
+      vol_email: "Young musician's email", vol_phone: "Young musician's phone",
+      upload_parent_id: "Parent/Guardian ID document", upload_vol_id: "Young musician's ID document",
+      upload_socio_id: "Your ID document",
+      music_skills: "Tell us something about them",
+      ph_skills: "Do they already play an instrument? For how long? What do they listen to? Even a couple of lines help.",
+      tc_label: "I have read and accept the Statute, Terms & Conditions and Privacy Policy of {{NOME_LEGALE}}, also on behalf of the minor I represent.",
+      tc_label_ord: "I have read and accept the Statute, Terms & Conditions and Privacy Policy of {{NOME_LEGALE}}.",
+      privacy_link_text: "Read the Privacy Policy",
+      block_media: "Photos and videos",
+      block_media_sub_minor: "Optional, and it won't affect your application: you can choose whether to authorise use of images of the minor you represent, and withdraw consent at any time by emailing {{EMAIL_MITTENTE}}.",
+      block_media_sub_ord: "Optional, and it won't affect your application: you can choose whether to authorise use of your images, and withdraw consent at any time by emailing {{EMAIL_MITTENTE}}.",
+      lib_sito: "On the Association's website ({{DOMINIO}})",
+      lib_social: "On the Association's social media channels (Instagram, Facebook, YouTube and similar)",
+      lib_stampa: "In printed promotional material (posters, brochures, press releases)",
+      lib_video: "In promotional videos of the Association's activities",
+      label_sesso: "Sex", opt_select: "Select", opt_m: "Male", opt_f: "Female",
+      label_cf: "Tax code", label_data_nascita: "Date of birth",
+      header_ord_title: "Great. Now tell us who you are.",
+      header_ord_sub: "These details go into the Association's members' book: take a minute to check them.",
+      header_ord_payment_note: "You pay nothing here. If the Board approves your application, you'll receive an email with a button to complete membership and pay the fee.",
+      socio_first_name: "First name", socio_last_name: "Surname",
+      socio_email: "Your email", socio_phone: "Your phone",
+      hint_email: "This is where the Board's answer and all communications will arrive.",
+      hint_id_pratica: "Optional. You'll find it in the emails we sent the parent.",
+      hint_vol_email: "Optional.", hint_vol_phone: "Optional.",
+      file_drop: "Drag files here or tap to choose",
+      file_hint: "Front and back · max 2 files · up to 15 MB in total · JPG, PNG or PDF",
+      loading_text: "Sending your request…",
+      loading_sub: "Please don't close this page: uploading documents may take a few seconds.",
+      ty_title: "That's it. Your request is on its way.",
+      ty_sub: "From now on it's up to us. The Board reads every application personally, which is why it takes a few days.",
+      ty_t1_title: "Confirmation email",
+      ty_t1_text: "In a few minutes you'll get a summary with your Application ID. If you can't see it, check your spam folder.",
+      ty_t2_title: "The Board reviews it",
+      ty_t2_text: "You'll get the outcome by email, with everything you need for the next step.",
+      ty_t3_title: "Welcome to {{NOME_GRUPPO}}",
+      ty_t3_text: "Once membership is complete you receive your institutional account and membership card.",
+      err_summary: "Something's still missing: we've highlighted in red what needs fixing.",
+      err_role: "Choose one of the two profiles to continue.",
+      err_required: "This field is required.", err_select: "Please choose an option.",
+      err_short: "Please write at least 2 characters.",
+      err_email: "Invalid email: it should look like name@domain.com",
+      err_phone: "Invalid number: 6 to 15 digits are required.",
+      err_prefix: "Invalid country code: use the +39 format.",
+      err_cf_len: "The tax code is 16 characters long: {n} still missing.",
+      err_cf_format: "Invalid format. A tax code looks like RSSMRA95E05F205Z.",
+      err_cf_check: "This tax code doesn't check out: please review it.",
+      err_idpratica: "The Application ID looks like PR-00001.",
+      err_date: "Please enter a valid date.",
+      err_date_minor: "The volunteer must be under 18. If they are already 18, go back and choose \"Ordinary Member\".",
+      err_date_adult: "To join as an Ordinary Member you must be 18 or over. If you are a minor, go back and choose \"Minor Volunteer\".",
+      err_file_required: "Please upload the document (front and back).",
+      err_file_max: "You can upload at most 2 files per document.",
+      err_file_size: "Files exceed the 15 MB limit. Try a lower resolution.",
+      err_file_type: "Unsupported format: we accept JPG, PNG, HEIC or PDF.",
+      err_file_total: "You're uploading more than 25 MB in total: please reduce the file sizes.",
+      err_sign: "The signature is missing: draw it in the space above.",
+      err_tc: "You must accept the Statute and Privacy Policy to continue.",
+      err_send: "We couldn't send the request. Please try again shortly or write to {{EMAIL_MITTENTE}}.",
+      chip_remove: "Remove",
+      progress_files: "Preparing files {done}/{total}",
+      progress_sending: "Sending to the Board…",
+      draft_title: "You have an application in progress",
+      draft_note: "We found the details of an application you started filling in on this device. You'll just need to re-upload the documents and sign again.",
+      draft_resume: "Resume",
+      draft_discard: "Start over",
+      support_note: "Having trouble sending your application? Contact us at"
+    },
+    es: {
+      step_1: "Quién eres", step_2: "Tus datos", step_3: "Listo",
+      role_question: "Antes de nada: ¿quién escribe?",
+      role_help: "Elige el perfil que te corresponde. Solo cambia lo que te preguntaremos después.",
+      role_ord_title: "Socio Ordinario",
+      role_ord_desc: "Tienes 18 años cumplidos. Eres músico adulto o el padre/tutor de un chico que quiere tocar con nosotros.",
+      role_min_title: "Voluntario Menor",
+      role_min_desc: "Tienes menos de 18 años. La solicitud la rellena y firma un padre o tutor, que ya debe ser Socio Ordinario.",
+      btn_next: "Continuar", btn_back: "Atrás",
+      btn_submit_minor: "Enviar la solicitud", btn_submit_ord: "Enviar la solicitud",
+      btn_clear: "Borrar", btn_site: "Volver a {{DOMINIO}}",
+      header_minor_title: "Este primer paso lo dais entre dos",
+      header_minor_sub: "Para inscribir a un menor hace falta un padre o tutor ya inscrito como Socio Ordinario: es quien firma la solicitud y responde por el menor.",
+      block_parent: "El padre o tutor",
+      block_parent_sub: "Quien acompaña al chico y asume la responsabilidad de la solicitud.",
+      block_vol: "El joven músico", block_vol_sub: "Datos del chico o de la chica que entrará en la Orquesta.",
+      block_you: "Tus datos", block_docs: "Los documentos",
+      block_docs_sub_minor: "Nos sirven para inscribiros correctamente en el libro de socios. Solo los ve la Presidencia, quedan en un archivo reservado y no se comparten.",
+      block_docs_sub_ord: "Nos sirve para inscribirte correctamente en el libro de socios. Solo lo ve la Presidencia, queda en un archivo reservado y no se comparte.",
+      block_sign: "La firma",
+      block_sign_sub_minor: "Firma el padre o tutor, con el dedo en la pantalla o con el ratón.",
+      block_sign_sub_ord: "Firma con el dedo en la pantalla o con el ratón: equivale a suscribir la solicitud.",
+      sign_hint: "Firma aquí arriba",
+      parent_first_name: "Nombre del padre/tutor", parent_last_name: "Apellido del padre/tutor",
+      parent_email: "Correo del padre/tutor", parent_phone: "Teléfono del padre/tutor",
+      parent_cf: "Código Fiscal del padre/tutor", parent_id_pratica: "ID de solicitud del padre",
+      vol_first_name: "Nombre", vol_last_name: "Apellido",
+      vol_email: "Correo del menor", vol_phone: "Teléfono del menor",
+      upload_parent_id: "Documento de identidad del padre/tutor",
+      upload_vol_id: "Documento de identidad del menor",
+      upload_socio_id: "Tu documento de identidad",
+      music_skills: "Cuéntanos algo sobre él/ella",
+      ph_skills: "¿Ya toca algún instrumento? ¿Desde cuándo? ¿Qué le gusta escuchar? Con dos líneas nos basta.",
+      tc_label: "He leído y acepto el Estatuto, los Términos y Condiciones y la Política de Privacidad de {{NOME_LEGALE}}, también en nombre del menor que represento.",
+      tc_label_ord: "He leído y acepto el Estatuto, los Términos y Condiciones y la Política de Privacidad de {{NOME_LEGALE}}.",
+      privacy_link_text: "Leer la Política de Privacidad",
+      block_media: "Fotos y vídeos",
+      block_media_sub_minor: "Es opcional y no condiciona la inscripción: puedes elegir si autorizas el uso de las imágenes del menor que representas, y revocar el consentimiento cuando quieras escribiendo a {{EMAIL_MITTENTE}}.",
+      block_media_sub_ord: "Es opcional y no condiciona la inscripción: puedes elegir si autorizas el uso de tus imágenes, y revocar el consentimiento cuando quieras escribiendo a {{EMAIL_MITTENTE}}.",
+      lib_sito: "En el sitio web de la Asociación ({{DOMINIO}})",
+      lib_social: "En las redes sociales de la Asociación (Instagram, Facebook, YouTube y similares)",
+      lib_stampa: "En material promocional impreso (carteles, folletos, comunicados de prensa)",
+      lib_video: "En vídeos promocionales de la actividad de la Asociación",
+      label_sesso: "Sexo", opt_select: "Seleccionar", opt_m: "Masculino", opt_f: "Femenino",
+      label_cf: "Código Fiscal", label_data_nascita: "Fecha de nacimiento",
+      header_ord_title: "Bien. Ahora cuéntanos quién eres.",
+      header_ord_sub: "Son los datos que irán al libro de socios de la Asociación: tómate un minuto para comprobarlos.",
+      header_ord_payment_note: "Aquí no pagas nada. Si la Presidencia aprueba tu solicitud, recibirás un correo con el botón para completar la inscripción y pagar la cuota.",
+      socio_first_name: "Nombre", socio_last_name: "Apellido",
+      socio_email: "Tu correo electrónico", socio_phone: "Tu teléfono",
+      hint_email: "Aquí llegarán la respuesta de la Presidencia y todas las comunicaciones.",
+      hint_id_pratica: "Opcional. Lo encuentras en los correos que enviamos al padre.",
+      hint_vol_email: "Opcional.", hint_vol_phone: "Opcional.",
+      file_drop: "Arrastra aquí los archivos o toca para elegirlos",
+      file_hint: "Anverso y reverso · máx. 2 archivos · hasta 15 MB en total · JPG, PNG o PDF",
+      loading_text: "Estamos enviando tu solicitud…",
+      loading_sub: "No cierres esta página: subir los documentos puede tardar unos segundos.",
+      ty_title: "Ya está. Tu solicitud está en camino.",
+      ty_sub: "A partir de ahora nos toca a nosotros. La Presidencia lee personalmente cada solicitud: no es automático, por eso tarda unos días.",
+      ty_t1_title: "Correo de confirmación",
+      ty_t1_text: "En unos minutos recibirás el resumen con tu ID de solicitud. Si no lo ves, revisa el spam.",
+      ty_t2_title: "La Presidencia valora",
+      ty_t2_text: "Recibirás el resultado por correo, con todas las indicaciones para el siguiente paso.",
+      ty_t3_title: "Bienvenido a la Orquesta",
+      ty_t3_text: "Una vez completada la inscripción recibirás tu cuenta institucional y el carné de socio.",
+      err_summary: "Todavía falta algo: te hemos marcado en rojo lo que hay que corregir.",
+      err_role: "Elige uno de los dos perfiles para continuar.",
+      err_required: "Este campo es obligatorio.", err_select: "Elige una opción.",
+      err_short: "Escribe al menos 2 caracteres.",
+      err_email: "Correo no válido: debe ser tipo nombre@dominio.es",
+      err_phone: "Número no válido: se necesitan de 6 a 15 cifras.",
+      err_prefix: "Prefijo no válido: usa el formato +39.",
+      err_cf_len: "El Código Fiscal tiene 16 caracteres: faltan {n}.",
+      err_cf_format: "Formato no válido. El Código Fiscal es tipo RSSMRA95E05F205Z.",
+      err_cf_check: "Este Código Fiscal no resulta correcto: revísalo.",
+      err_idpratica: "El ID de solicitud tiene el formato PR-00001.",
+      err_date: "Introduce una fecha válida.",
+      err_date_minor: "El voluntario debe ser menor de 18 años. Si ya los ha cumplido, vuelve atrás y elige \"Socio Ordinario\".",
+      err_date_adult: "Para inscribirte como Socio Ordinario debes ser mayor de edad. Si eres menor, vuelve atrás y elige \"Voluntario Menor\".",
+      err_file_required: "Sube el documento (anverso y reverso).",
+      err_file_max: "Puedes subir como máximo 2 archivos por documento.",
+      err_file_size: "Los archivos superan el límite de 15 MB. Prueba con menor resolución.",
+      err_file_type: "Formato no admitido: aceptamos JPG, PNG, HEIC o PDF.",
+      err_file_total: "En total estás subiendo más de 25 MB: reduce el peso de los archivos.",
+      err_sign: "Falta la firma: dibújala en el espacio de arriba.",
+      err_tc: "Para continuar debes aceptar el Estatuto y la Política de Privacidad.",
+      err_send: "No hemos podido enviar la solicitud. Inténtalo de nuevo en unos minutos o escríbenos a {{EMAIL_MITTENTE}}.",
+      chip_remove: "Quitar",
+      progress_files: "Preparando archivos {done}/{total}",
+      progress_sending: "Enviando a la Presidencia…",
+      draft_title: "Tienes una solicitud en curso",
+      draft_note: "Hemos encontrado los datos de una solicitud que empezaste a rellenar en este dispositivo. Solo tendrás que volver a subir los documentos y firmar de nuevo.",
+      draft_resume: "Continuar",
+      draft_discard: "Empezar de nuevo",
+      support_note: "¿Tienes problemas para enviar la solicitud? Escríbenos a"
+    },
+    fr: {
+      step_1: "Qui es-tu", step_2: "Tes informations", step_3: "Terminé",
+      role_question: "D'abord : qui écrit ?",
+      role_help: "Choisis le profil qui te correspond. Cela change seulement ce que nous te demanderons ensuite.",
+      role_ord_title: "Membre Ordinaire",
+      role_ord_desc: "Tu as 18 ans révolus. Musicien adulte, ou parent/tuteur d'un jeune qui veut jouer avec nous.",
+      role_min_title: "Bénévole Mineur",
+      role_min_desc: "Tu as moins de 18 ans. La demande est remplie et signée par un parent ou tuteur, qui doit déjà être Membre Ordinaire.",
+      btn_next: "Continuer", btn_back: "Retour",
+      btn_submit_minor: "Envoyer la demande", btn_submit_ord: "Envoyer la demande",
+      btn_clear: "Effacer", btn_site: "Retour sur {{DOMINIO}}",
+      header_minor_title: "Ce premier pas se fait à deux",
+      header_minor_sub: "Pour inscrire un mineur, un parent ou tuteur doit déjà être Membre Ordinaire : c'est lui qui signe la demande et se porte garant.",
+      block_parent: "Le parent ou tuteur",
+      block_parent_sub: "Celui qui accompagne le jeune et assume la responsabilité de la demande.",
+      block_vol: "Le jeune musicien", block_vol_sub: "Les informations du jeune qui entrera dans l'Orchestre.",
+      block_you: "Tes informations", block_docs: "Les documents",
+      block_docs_sub_minor: "Ils nous servent à vous inscrire correctement au registre des membres. Seule la Présidence les voit ; ils restent dans une archive réservée et ne sont jamais partagés.",
+      block_docs_sub_ord: "Il nous sert à t'inscrire correctement au registre des membres. Seule la Présidence le voit ; il reste dans une archive réservée et n'est jamais partagé.",
+      block_sign: "La signature",
+      block_sign_sub_minor: "C'est le parent ou tuteur qui signe, au doigt sur l'écran ou à la souris.",
+      block_sign_sub_ord: "Signe au doigt sur l'écran ou à la souris : cela vaut souscription de la demande.",
+      sign_hint: "Signe ci-dessus",
+      parent_first_name: "Prénom du parent/tuteur", parent_last_name: "Nom du parent/tuteur",
+      parent_email: "Email du parent/tuteur", parent_phone: "Téléphone du parent/tuteur",
+      parent_cf: "Code fiscal du parent/tuteur", parent_id_pratica: "ID de demande du parent",
+      vol_first_name: "Prénom", vol_last_name: "Nom",
+      vol_email: "Email du jeune", vol_phone: "Téléphone du jeune",
+      upload_parent_id: "Pièce d'identité du parent/tuteur",
+      upload_vol_id: "Pièce d'identité du jeune",
+      upload_socio_id: "Ta pièce d'identité",
+      music_skills: "Parle-nous un peu de lui/elle",
+      ph_skills: "Joue-t-il déjà d'un instrument ? Depuis quand ? Qu'aime-t-il écouter ? Deux lignes suffisent.",
+      tc_label: "J'ai lu et j'accepte les Statuts, les Conditions Générales et la Politique de Confidentialité d'{{NOME_LEGALE}}, également au nom du mineur que je représente.",
+      tc_label_ord: "J'ai lu et j'accepte les Statuts, les Conditions Générales et la Politique de Confidentialité d'{{NOME_LEGALE}}.",
+      privacy_link_text: "Lire la Politique de Confidentialité",
+      block_media: "Photos et vidéos",
+      block_media_sub_minor: "Facultatif, et sans incidence sur l'inscription : vous pouvez choisir d'autoriser ou non l'utilisation des images du mineur que vous représentez, et révoquer ce consentement à tout moment en écrivant à {{EMAIL_MITTENTE}}.",
+      block_media_sub_ord: "Facultatif, et sans incidence sur l'inscription : vous pouvez choisir d'autoriser ou non l'utilisation de vos images, et révoquer ce consentement à tout moment en écrivant à {{EMAIL_MITTENTE}}.",
+      lib_sito: "Sur le site web de l'Association ({{DOMINIO}})",
+      lib_social: "Sur les réseaux sociaux de l'Association (Instagram, Facebook, YouTube et similaires)",
+      lib_stampa: "Sur des supports promotionnels imprimés (affiches, brochures, communiqués de presse)",
+      lib_video: "Dans des vidéos promotionnelles de l'activité associative",
+      label_sesso: "Sexe", opt_select: "Sélectionner", opt_m: "Masculin", opt_f: "Féminin",
+      label_cf: "Code fiscal", label_data_nascita: "Date de naissance",
+      header_ord_title: "Très bien. Dis-nous maintenant qui tu es.",
+      header_ord_sub: "Ces informations iront au registre des membres de l'Association : prends une minute pour les vérifier.",
+      header_ord_payment_note: "Ici tu ne paies rien. Si la Présidence approuve ta demande, tu recevras un email avec le bouton pour finaliser l'adhésion et régler la cotisation.",
+      socio_first_name: "Prénom", socio_last_name: "Nom",
+      socio_email: "Ton email", socio_phone: "Ton téléphone",
+      hint_email: "C'est ici qu'arriveront la réponse de la Présidence et toutes les communications.",
+      hint_id_pratica: "Facultatif. Tu le trouves dans les emails envoyés au parent.",
+      hint_vol_email: "Facultatif.", hint_vol_phone: "Facultatif.",
+      file_drop: "Glisse les fichiers ici ou touche pour les choisir",
+      file_hint: "Recto et verso · 2 fichiers max · jusqu'à 15 Mo au total · JPG, PNG ou PDF",
+      loading_text: "Nous envoyons ta demande…",
+      loading_sub: "Ne ferme pas cette page : le chargement des documents peut prendre quelques secondes.",
+      ty_title: "Voilà. Ta demande est partie.",
+      ty_sub: "À partir de maintenant, c'est à nous de jouer. La Présidence lit personnellement chaque demande : ce n'est pas automatique, d'où quelques jours d'attente.",
+      ty_t1_title: "Email de confirmation",
+      ty_t1_text: "Dans quelques minutes tu recevras le récapitulatif avec ton ID de demande. Si tu ne le vois pas, vérifie les spams.",
+      ty_t2_title: "La Présidence examine",
+      ty_t2_text: "Tu recevras la réponse par email, avec toutes les indications pour la suite.",
+      ty_t3_title: "Bienvenue dans l'Orchestre",
+      ty_t3_text: "Une fois l'adhésion finalisée, tu reçois ton compte institutionnel et ta carte de membre.",
+      err_summary: "Il manque encore quelque chose : nous avons surligné en rouge ce qu'il faut corriger.",
+      err_role: "Choisis l'un des deux profils pour continuer.",
+      err_required: "Ce champ est obligatoire.", err_select: "Choisis une option.",
+      err_short: "Écris au moins 2 caractères.",
+      err_email: "Email invalide : il doit ressembler à nom@domaine.fr",
+      err_phone: "Numéro invalide : il faut de 6 à 15 chiffres.",
+      err_prefix: "Indicatif invalide : utilise le format +39.",
+      err_cf_len: "Le code fiscal comporte 16 caractères : il en manque {n}.",
+      err_cf_format: "Format invalide. Un code fiscal ressemble à RSSMRA95E05F205Z.",
+      err_cf_check: "Ce code fiscal ne semble pas correct : vérifie-le.",
+      err_idpratica: "L'ID de demande a le format PR-00001.",
+      err_date: "Saisis une date valide.",
+      err_date_minor: "Le bénévole doit avoir moins de 18 ans. S'il les a déjà, reviens en arrière et choisis « Membre Ordinaire ».",
+      err_date_adult: "Pour adhérer comme Membre Ordinaire tu dois être majeur. Si tu es mineur, reviens en arrière et choisis « Bénévole Mineur ».",
+      err_file_required: "Charge le document (recto et verso).",
+      err_file_max: "Tu peux charger au maximum 2 fichiers par document.",
+      err_file_size: "Les fichiers dépassent la limite de 15 Mo. Essaie une résolution plus basse.",
+      err_file_type: "Format non pris en charge : nous acceptons JPG, PNG, HEIC ou PDF.",
+      err_file_total: "Au total tu charges plus de 25 Mo : réduis le poids des fichiers.",
+      err_sign: "La signature manque : dessine-la dans l'espace ci-dessus.",
+      err_tc: "Pour continuer tu dois accepter les Statuts et la Politique de Confidentialité.",
+      err_send: "Nous n'avons pas pu envoyer la demande. Réessaie dans quelques minutes ou écris à {{EMAIL_MITTENTE}}.",
+      chip_remove: "Retirer",
+      progress_files: "Préparation des fichiers {done}/{total}",
+      progress_sending: "Envoi à la Présidence…",
+      draft_title: "Tu as une demande en cours",
+      draft_note: "Nous avons retrouvé les données d'une demande que tu avais commencé à remplir sur cet appareil. Il te suffira de recharger les documents et de signer à nouveau.",
+      draft_resume: "Reprendre",
+      draft_discard: "Recommencer",
+      support_note: "Tu as des problèmes pour envoyer la demande ? Contacte-nous à"
+    },
+    "zh-CN": {
+      step_1: "你是谁", step_2: "你的资料", step_3: "完成",
+      role_question: "首先：填表的是谁？",
+      role_help: "选择符合你情况的身份，这只会改变接下来要填的内容。",
+      role_ord_title: "正式会员",
+      role_ord_desc: "你已年满18岁。可以是成年乐手，也可以是想让孩子加入乐团的家长/监护人。",
+      role_min_title: "未成年志愿者",
+      role_min_desc: "你未满18岁。申请须由家长或监护人填写并签名，且该家长须已是正式会员。",
+      btn_next: "继续", btn_back: "返回",
+      btn_submit_minor: "提交申请", btn_submit_ord: "提交申请",
+      btn_clear: "清除", btn_site: "返回 {{DOMINIO}}",
+      header_minor_title: "这一步需要你们两个人",
+      header_minor_sub: "为未成年人报名，需要一位已注册为正式会员的家长或监护人：由其签署申请并为未成年人担保。",
+      block_parent: "家长或监护人", block_parent_sub: "陪伴孩子并对本申请负责的人。",
+      block_vol: "年轻乐手", block_vol_sub: "即将加入乐团的孩子的资料。",
+      block_you: "你的资料", block_docs: "证件",
+      block_docs_sub_minor: "用于在会员名册中正确登记。仅理事会可见，保存在受限档案中，绝不对外分享。",
+      block_docs_sub_ord: "用于在会员名册中正确登记。仅理事会可见，保存在受限档案中，绝不对外分享。",
+      block_sign: "签名",
+      block_sign_sub_minor: "由家长或监护人用手指或鼠标签名。",
+      block_sign_sub_ord: "用手指或鼠标签名，等同于签署本申请。",
+      sign_hint: "请在上方签名",
+      parent_first_name: "家长/监护人名字", parent_last_name: "家长/监护人姓氏",
+      parent_email: "家长/监护人邮箱", parent_phone: "家长/监护人电话",
+      parent_cf: "家长/监护人税号", parent_id_pratica: "家长的申请编号",
+      vol_first_name: "名字", vol_last_name: "姓氏",
+      vol_email: "孩子的邮箱", vol_phone: "孩子的电话",
+      upload_parent_id: "家长/监护人身份证件", upload_vol_id: "孩子的身份证件",
+      upload_socio_id: "你的身份证件",
+      music_skills: "介绍一下他/她",
+      ph_skills: "已经会某种乐器吗？学了多久？平时喜欢听什么？写两行就够了。",
+      tc_label: "我已阅读并接受 {{NOME_LEGALE}} 的章程、条款与条件及隐私政策，并代表我所监护的未成年人一并接受。",
+      tc_label_ord: "我已阅读并接受 {{NOME_LEGALE}} 的章程、条款与条件及隐私政策。",
+      privacy_link_text: "阅读隐私政策",
+      block_media: "照片与视频",
+      block_media_sub_minor: "此项为自愿选择，不影响入会申请：您可以自行决定是否授权使用您所代表的未成年人的肖像，并可随时通过邮件 {{EMAIL_MITTENTE}} 撤回同意。",
+      block_media_sub_ord: "此项为自愿选择，不影响入会申请：您可以自行决定是否授权使用您的肖像，并可随时通过邮件 {{EMAIL_MITTENTE}} 撤回同意。",
+      lib_sito: "协会官网（{{DOMINIO}}）",
+      lib_social: "协会社交媒体渠道（Instagram、Facebook、YouTube 等）",
+      lib_stampa: "印刷宣传材料（海报、宣传册、新闻稿）",
+      lib_video: "协会活动宣传视频",
+      label_sesso: "性别", opt_select: "请选择", opt_m: "男", opt_f: "女",
+      label_cf: "税号", label_data_nascita: "出生日期",
+      header_ord_title: "很好。现在告诉我们你是谁。",
+      header_ord_sub: "这些资料将录入协会会员名册，请花一分钟核对。",
+      header_ord_payment_note: "此处无需付款。若理事会批准你的申请，你会收到一封邮件，内含完成入会并缴纳会费的按钮。",
+      socio_first_name: "名字", socio_last_name: "姓氏",
+      socio_email: "你的邮箱", socio_phone: "你的电话",
+      hint_email: "理事会的答复和所有通知都会发到这里。",
+      hint_id_pratica: "可选。在我们发给家长的邮件中可以找到。",
+      hint_vol_email: "可选。", hint_vol_phone: "可选。",
+      file_drop: "将文件拖到这里，或点击选择",
+      file_hint: "正反面 · 最多 2 个文件 · 总计不超过 15 MB · JPG、PNG 或 PDF",
+      loading_text: "正在提交你的申请…",
+      loading_sub: "请勿关闭此页面：上传证件可能需要几秒钟。",
+      ty_title: "好了，你的申请已经发出。",
+      ty_sub: "接下来交给我们。理事会会亲自阅读每一份申请，并非自动处理，因此需要几天时间。",
+      ty_t1_title: "确认邮件",
+      ty_t1_text: "几分钟内你会收到申请摘要和你的申请编号。如果没看到，请检查垃圾邮件。",
+      ty_t2_title: "理事会审核",
+      ty_t2_text: "你会通过邮件收到结果，以及下一步的全部说明。",
+      ty_t3_title: "欢迎加入乐团",
+      ty_t3_text: "入会完成后，你会收到机构账号和会员证。",
+      err_summary: "还差一点：需要修改的地方已用红色标出。",
+      err_role: "请选择其中一种身份以继续。",
+      err_required: "此项为必填。", err_select: "请选择一个选项。",
+      err_short: "请至少输入 2 个字符。",
+      err_email: "邮箱无效：格式应为 name@domain.com",
+      err_phone: "号码无效：需要 6 至 15 位数字。",
+      err_prefix: "国际区号无效：请使用 +39 这样的格式。",
+      err_cf_len: "税号共 16 位，还差 {n} 位。",
+      err_cf_format: "格式无效。税号形如 RSSMRA95E05F205Z。",
+      err_cf_check: "该税号校验不通过：请再检查一下。",
+      err_idpratica: "申请编号格式为 PR-00001。",
+      err_date: "请输入有效日期。",
+      err_date_minor: "志愿者必须未满18岁。若已满18岁，请返回并选择「正式会员」。",
+      err_date_adult: "以正式会员身份入会需已成年。若未成年，请返回并选择「未成年志愿者」。",
+      err_file_required: "请上传证件（正反面）。",
+      err_file_max: "每份证件最多上传 2 个文件。",
+      err_file_size: "文件超过 15 MB 限制。请用更低分辨率重新拍摄。",
+      err_file_type: "不支持的格式：仅接受 JPG、PNG、HEIC 或 PDF。",
+      err_file_total: "你上传的文件总计超过 25 MB：请减小文件体积。",
+      err_sign: "缺少签名：请在上方空白处签名。",
+      err_tc: "请接受章程与隐私政策后继续。",
+      err_send: "申请提交失败。请几分钟后重试，或写信至 {{EMAIL_MITTENTE}}。",
+      chip_remove: "移除",
+      progress_files: "正在准备文件 {done}/{total}",
+      progress_sending: "正在发送给理事会…",
+      draft_title: "你有一份未完成的申请",
+      draft_note: "我们在此设备上找到了你之前填写的申请资料。你只需要重新上传证件并重新签名即可。",
+      draft_resume: "继续填写",
+      draft_discard: "重新开始",
+      support_note: "提交申请遇到问题？请联系我们："
+    }
+  };
+
+  let currentLang = 'it';
+  function t(key) {
+    const d = translations[currentLang] || translations.it;
+    return d[key] || translations.it[key] || key;
+  }
+
+  function changeLanguage(lang) {
+    if (!translations[lang]) return;
+    currentLang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const v = t(el.getAttribute('data-i18n'));
+      if (v) el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+      const v = t(el.getAttribute('data-i18n-ph'));
+      if (v) el.placeholder = v;
+    });
+    // Rigenera le etichette dinamiche già a schermo
+    Object.keys(fileStore).forEach(renderChips);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     ERRORI INLINE — nessun alert() del browser in tutto il modulo
+     ══════════════════════════════════════════════════════════════ */
+  function showError(fieldId, msg) {
+    const box = document.getElementById('err_' + fieldId);
+    if (box) { box.textContent = msg; box.classList.add('show'); }
+    // I contenitori (dropzone, firma, consenso, toggle sesso) vanno cercati
+    // PRIMA dell'elemento omonimo: è il riquadro a doversi colorare di rosso,
+    // non l'input invisibile o il canvas al suo interno.
+    const el = document.getElementById('dz_' + fieldId)
+            || document.getElementById('sig_' + fieldId)
+            || document.getElementById('cons_' + fieldId)
+            || document.getElementById('sesso_' + fieldId)
+            || document.getElementById(fieldId);
+    if (el) { el.classList.add('is-invalid'); el.classList.remove('is-valid'); }
+    return false;
+  }
+
+  function clearError(fieldId) {
+    const box = document.getElementById('err_' + fieldId);
+    if (box) { box.textContent = ''; box.classList.remove('show'); }
+    ['', 'dz_', 'sig_', 'cons_', 'sesso_'].forEach(p => {
+      const el = document.getElementById(p + fieldId);
+      if (el) el.classList.remove('is-invalid');
+    });
+    return true;
+  }
+
+  function markValid(fieldId) {
+    clearError(fieldId);
+    const el = document.getElementById(fieldId);
+    if (el && el.tagName === 'INPUT') el.classList.add('is-valid');
+    return true;
+  }
+
+  function showGlobalError(msg) {
+    const box = document.getElementById('globalError');
+    box.textContent = msg;
+    box.classList.remove('show');
+    void box.offsetWidth;           // riavvia l'animazione
+    box.classList.add('show');
+    scrollToEl(box);
+  }
+
+  function hideGlobalError() {
+    document.getElementById('globalError').classList.remove('show');
+  }
+
+  function scrollToEl(el) {
+    if (!el) return;
+    try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    catch (e) { el.scrollIntoView(); }
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     MASCHERE DI INPUT
+     ══════════════════════════════════════════════════════════════ */
+
+  // Codice Fiscale: solo lettere/cifre, maiuscolo, max 16
+  function maskCF(input) {
+    const start = input.selectionStart;
+    const before = input.value;
+    input.value = before.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16);
+    if (before.length === start) input.setSelectionRange(input.value.length, input.value.length);
+  }
+
+  // ID Pratica: prefisso PR- automatico + max 5 cifre  →  PR-00001
+  function maskIdPratica(input) {
+    let digits = input.value.toUpperCase().replace(/[^0-9]/g, '').slice(0, 5);
+    input.value = digits ? 'PR-' + digits : '';
+  }
+
+  // Telefono: solo cifre, raggruppate per leggibilità
+  function maskPhone(input) {
+    const digits = input.value.replace(/\D/g, '').slice(0, 15);
+    let out = digits;
+    if (digits.length > 6) out = digits.slice(0,3) + ' ' + digits.slice(3,6) + ' ' + digits.slice(6);
+    else if (digits.length > 3) out = digits.slice(0,3) + ' ' + digits.slice(3);
+    input.value = out;
+  }
+
+  // Prefisso internazionale: un solo "+" iniziale, max 4 cifre
+  function maskPrefix(input) {
+    const digits = input.value.replace(/\D/g, '').slice(0, 4);
+    input.value = digits ? '+' + digits : '+';
+  }
+
+  // Email: niente spazi, minuscolo
+  function maskEmail(input) {
+    input.value = input.value.replace(/\s/g, '').toLowerCase();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     VALIDATORI
+     ══════════════════════════════════════════════════════════════ */
+
+  function vRequired(id) {
+    const el = document.getElementById(id);
+    const val = (el.value || '').trim();
+    // "Scelta" = select nativa oppure i toggle sesso (input nascosto con
+    // data-choice): niente regola dei 2 caratteri minimi, che ha senso solo
+    // per campi testo liberi (nome, cognome...), non per un valore come "M".
+    const isScelta = el.tagName === 'SELECT' || el.dataset.choice === 'true';
+    if (!val) return showError(id, isScelta ? t('err_select') : t('err_required'));
+    if (!isScelta && el.type !== 'date' && val.length < 2) return showError(id, t('err_short'));
+    return markValid(id);
+  }
+
+  function vEmail(id, required) {
+    const el = document.getElementById(id);
+    const val = (el.value || '').trim();
+    if (!val) return required ? showError(id, t('err_required')) : clearError(id);
+    if (!/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(val)) return showError(id, t('err_email'));
+    return markValid(id);
+  }
+
+  function vPhone(id, prefixId, required) {
+    const el = document.getElementById(id);
+    const digits = (el.value || '').replace(/\D/g, '');
+    if (!digits) return required ? showError(id, t('err_required')) : clearError(id);
+    const pref = (document.getElementById(prefixId).value || '').replace(/\D/g, '');
+    if (!pref) return showError(id, t('err_prefix'));
+    if (digits.length < 6 || digits.length > 15) return showError(id, t('err_phone'));
+    return markValid(id);
+  }
+
+  // Checksum ufficiale del Codice Fiscale (carattere di controllo).
+  const CF_ODD = { '0':1,'1':0,'2':5,'3':7,'4':9,'5':13,'6':15,'7':17,'8':19,'9':21,
+    'A':1,'B':0,'C':5,'D':7,'E':9,'F':13,'G':15,'H':17,'I':19,'J':21,'K':2,'L':4,'M':18,
+    'N':20,'O':11,'P':3,'Q':6,'R':8,'S':12,'T':14,'U':16,'V':10,'W':22,'X':25,'Y':24,'Z':23 };
+  const CF_EVEN = { '0':0,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,
+    'A':0,'B':1,'C':2,'D':3,'E':4,'F':5,'G':6,'H':7,'I':8,'J':9,'K':10,'L':11,'M':12,
+    'N':13,'O':14,'P':15,'Q':16,'R':17,'S':18,'T':19,'U':20,'V':21,'W':22,'X':23,'Y':24,'Z':25 };
+  const CF_REM = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  function cfControlChar(cf15) {
+    let sum = 0;
+    for (let i = 0; i < 15; i++) {
+      const c = cf15.charAt(i);
+      sum += (i % 2 === 0) ? CF_ODD[c] : CF_EVEN[c];   // posizione 1 = dispari
+    }
+    return CF_REM.charAt(sum % 26);
+  }
+
+  function vCF(id, required) {
+    const el = document.getElementById(id);
+    const val = (el.value || '').trim().toUpperCase();
+    if (!val) return required ? showError(id, t('err_required')) : clearError(id);
+    if (val.length < 16) return showError(id, t('err_cf_len').replace('{n}', String(16 - val.length)));
+    if (!/^[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]$/.test(val)) return showError(id, t('err_cf_format'));
+    if (cfControlChar(val.slice(0, 15)) !== val.charAt(15)) return showError(id, t('err_cf_check'));
+    return markValid(id);
+  }
+
+  function vIdPratica(id) {
+    const el = document.getElementById(id);
+    const val = (el.value || '').trim().toUpperCase();
+    if (!val) return clearError(id);                      // campo facoltativo
+    if (!/^PR-\d{5}$/.test(val)) return showError(id, t('err_idpratica'));
+    return markValid(id);
+  }
+
+  function anniCompiuti(iso) {
+    const d = new Date(iso + 'T00:00:00');
+    if (isNaN(d.getTime())) return null;
+    const oggi = new Date();
+    let a = oggi.getFullYear() - d.getFullYear();
+    const m = oggi.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && oggi.getDate() < d.getDate())) a--;
+    return a;
+  }
+
+  function vData(id, tipo) {
+    const el = document.getElementById(id);
+    const val = (el.value || '').trim();
+    if (!val) return showError(id, t('err_required'));
+    const eta = anniCompiuti(val);
+    if (eta === null || eta < 0 || eta > 120) return showError(id, t('err_date'));
+    if (tipo === 'minore' && eta >= 18) return showError(id, t('err_date_minor'));
+    if (tipo === 'adulto' && eta < 18) return showError(id, t('err_date_adult'));
+    return markValid(id);
+  }
+
+  function vFile(id) {
+    const files = fileStore[id] || [];
+    if (!files.length) return showError(id, t('err_file_required'));
+    return clearError(id);
+  }
+
+  function vFirma(canvasId) {
+    const st = canvasState[canvasId];
+    if (!st || !st.hasSigned) return showError(canvasId, t('err_sign'));
+    return clearError(canvasId);
+  }
+
+  function vConsenso(id) {
+    if (!document.getElementById(id).checked) return showError(id, t('err_tc'));
+    return clearError(id);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     UPLOAD FILE — max 2 file, max 15 MB per documento
+     ══════════════════════════════════════════════════════════════ */
+  const MAX_FILES = 2;
+  const MAX_BYTES_FIELD = 15 * 1024 * 1024;   // 15 MB per singolo documento
+  const MAX_BYTES_TOTAL = 25 * 1024 * 1024;   // tetto complessivo dell'invio
+  const TIPI_OK = ['image/jpeg','image/jpg','image/png','image/heic','image/heif','application/pdf'];
+  const EST_OK = ['jpg','jpeg','png','heic','heif','pdf'];
+
+  const fileStore = { fileParentId: [], fileVolId: [], fileSocioId: [] };
+  const fileStorePreviewUrls = { fileParentId: [], fileVolId: [], fileSocioId: [] };
+
+  function estensione(nome) {
+    const p = String(nome || '').split('.');
+    return p.length > 1 ? p.pop().toLowerCase() : '';
+  }
+
+  function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1024 * 1024) return (b / 1024).toFixed(0) + ' KB';
+    return (b / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function isImmagine(file) {
+    return (file.type || '').toLowerCase().indexOf('image/') === 0;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     COMPRESSIONE IMMAGINI + CORREZIONE ROTAZIONE EXIF
+     Solo JPG/PNG: HEIC e PDF passano invariati (il canvas non li sa
+     decodificare in modo affidabile su tutti i browser).
+     ══════════════════════════════════════════════════════════════ */
+  const COMPRIMIBILI_TIPI = ['image/jpeg','image/jpg','image/png'];
+  const COMPRIMIBILI_EST = ['jpg','jpeg','png'];
+  const IMG_LATO_MAX = 1920;      // px sul lato lungo: più che sufficiente per leggere un documento
+  const IMG_QUALITY = 0.82;
+
+  function isComprimibile(file) {
+    return COMPRIMIBILI_TIPI.indexOf((file.type || '').toLowerCase()) >= 0
+        || COMPRIMIBILI_EST.indexOf(estensione(file.name)) >= 0;
+  }
+
+  function comeJpeg(nome) {
+    const base = String(nome || 'foto').replace(/\.[^.]+$/, '');
+    return (base || 'foto') + '.jpg';
+  }
+
+  // Ridimensiona e ricomprime lato client. Usa createImageBitmap con
+  // imageOrientation:'from-image', che applica la rotazione EXIF della foto
+  // (comune sugli scatti da smartphone) prima di disegnarla sul canvas: senza,
+  // il canvas ignora l'EXIF e la foto può uscire ruotata di 90°/180°.
+  // In caso di errore o browser non supportato, restituisce il file originale:
+  // meglio un file più pesante che bloccare l'invio.
+  async function comprimiImmagine(file) {
+    if (!isComprimibile(file) || typeof createImageBitmap !== 'function') return file;
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const scala = Math.min(1, IMG_LATO_MAX / Math.max(bitmap.width, bitmap.height));
+      const w = Math.max(1, Math.round(bitmap.width * scala));
+      const h = Math.max(1, Math.round(bitmap.height * scala));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, w, h);
+      if (bitmap.close) bitmap.close();
+
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', IMG_QUALITY));
+      if (!blob || blob.size >= file.size) return file;   // non peggiorare mai l'originale
+
+      return new File([blob], comeJpeg(file.name), { type: 'image/jpeg' });
+    } catch (e) {
+      return file;
+    }
+  }
+
+  // Unica pipeline di validazione file, usata sia dal click-picker (onFilesPicked)
+  // sia dal drop esplicito sulla dropzone (vedi sotto): stessi limiti di tipo,
+  // dimensione e numero massimo in entrambi i casi. Le immagini passano prima
+  // dalla compressione (comprimiImmagine), così il limite di 15 MB si applica
+  // al file già ridotto, non alla foto originale dello smartphone.
+  async function handleFiles(id, fileList) {
+    const scelti = Array.prototype.slice.call(fileList || []);
+    if (!scelti.length) return;
+
+    const dz = document.getElementById('dz_' + id);
+    if (dz) dz.classList.add('processing');
+
+    const store = fileStore[id];
+    let errore = null;
+
+    for (const originale of scelti) {
+      if (store.length >= MAX_FILES) { errore = t('err_file_max'); continue; }
+      const tipoOk = TIPI_OK.indexOf((originale.type || '').toLowerCase()) >= 0 || EST_OK.indexOf(estensione(originale.name)) >= 0;
+      if (!tipoOk) { errore = t('err_file_type'); continue; }
+
+      const f = await comprimiImmagine(originale);
+
+      const totale = store.reduce((s, x) => s + x.size, 0) + f.size;
+      if (totale > MAX_BYTES_FIELD) { errore = t('err_file_size'); continue; }
+      store.push(f);
+    }
+
+    if (dz) dz.classList.remove('processing');
+    renderChips(id);
+    if (errore) showError(id, errore); else clearError(id);
+  }
+
+  async function onFilesPicked(input) {
+    const id = input.id;
+    const files = input.files;
+    input.value = '';                      // permette di riselezionare lo stesso file
+    await handleFiles(id, files);
+  }
+
+  function removeFile(id, idx) {
+    fileStore[id].splice(idx, 1);
+    renderChips(id);
+    clearError(id);
+  }
+
+  function renderChips(id) {
+    const box = document.getElementById('chips_' + id);
+    if (!box) return;
+
+    // Le anteprime della renderizzazione precedente non servono più: revoca
+    // gli object URL prima di ricrearli, altrimenti restano in memoria.
+    (fileStorePreviewUrls[id] || []).forEach(url => URL.revokeObjectURL(url));
+    fileStorePreviewUrls[id] = [];
+
+    box.innerHTML = '';
+    (fileStore[id] || []).forEach((f, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'file-chip';
+
+      if (isImmagine(f)) {
+        const url = URL.createObjectURL(f);
+        fileStorePreviewUrls[id].push(url);
+        const thumb = document.createElement('img');
+        thumb.className = 'fc-thumb';
+        thumb.src = url;
+        thumb.alt = '';
+        chip.appendChild(thumb);
+      } else {
+        const icon = document.createElement('span');
+        icon.className = 'fc-icon';
+        icon.textContent = '📄';
+        chip.appendChild(icon);
+      }
+
+      const name = document.createElement('span');
+      name.className = 'fc-name';
+      name.textContent = f.name;
+
+      const size = document.createElement('span');
+      size.className = 'fc-size';
+      size.textContent = formatBytes(f.size);
+
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.setAttribute('aria-label', t('chip_remove'));
+      del.title = t('chip_remove');
+      del.textContent = '✕';
+      del.onclick = function () { removeFile(id, i); };
+
+      chip.appendChild(name);
+      chip.appendChild(size);
+      chip.appendChild(del);
+      box.appendChild(chip);
+    });
+  }
+
+  // Drag & drop esplicito sulla dropzone: intercettiamo noi il drop e lo
+  // passiamo alla stessa validazione del click-picker (handleFiles), invece di
+  // affidarci al comportamento implicito del browser sull'input trasparente
+  // sottostante — più prevedibile tra browser diversi e più facile da estendere.
+  ['fileParentId','fileVolId','fileSocioId'].forEach(id => {
+    const dz = document.getElementById('dz_' + id);
+    if (!dz) return;
+    ['dragenter','dragover'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('dragging'); }));
+    dz.addEventListener('dragleave', () => dz.classList.remove('dragging'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault();
+      dz.classList.remove('dragging');
+      handleFiles(id, e.dataTransfer && e.dataTransfer.files);
+    });
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     NAVIGAZIONE
+     ══════════════════════════════════════════════════════════════ */
+  let ruoloScelto = '';
+
+  function setStep(n) {
+    document.querySelectorAll('#stepsBar .step-dot').forEach(d => {
+      const s = parseInt(d.getAttribute('data-step'), 10);
+      d.classList.toggle('active', s === n);
+      d.classList.toggle('done', s < n);
+    });
+  }
+
+  function selectRole(role) {
+    ruoloScelto = role;
+    document.getElementById('roleCardOrd').classList.toggle('selected', role === 'Socio Ordinario');
+    document.getElementById('roleCardMin').classList.toggle('selected', role === 'Volontario Minorenne');
+    clearError('role');
+    hideGlobalError();
+    scheduleSaveDraft();
+  }
+
+  function goToStep2() {
+    if (!ruoloScelto) {
+      const box = document.getElementById('err_role');
+      box.textContent = t('err_role');
+      box.classList.add('show');
+      scrollToEl(box);
+      return;
+    }
+    hideGlobalError();
+    document.getElementById('step1').style.display = 'none';
+    if (ruoloScelto === 'Volontario Minorenne') {
+      document.getElementById('stepMinor').style.display = 'block';
+      initSignatureCanvas('canvasMinor');
+    } else {
+      document.getElementById('stepOrdinary').style.display = 'block';
+      initSignatureCanvas('canvasOrdinary');
+    }
+    setStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goBackToStep1() {
+    hideGlobalError();
+    document.getElementById('stepMinor').style.display = 'none';
+    document.getElementById('stepOrdinary').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    setStep(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     BOZZA AUTOMATICA (localStorage)
+     Salva solo i campi testuali del modulo — MAI documenti o firma: sono
+     dati binari/sensibili (documenti d'identità) che non hanno senso restare
+     nel browser, e la firma è un atto deliberato che non va mai ripristinato
+     automaticamente da una bozza. Chi riprende una bozza deve ricaricare
+     documenti e rifirmare.
+     ══════════════════════════════════════════════════════════════ */
+  const DRAFT_KEY = 'ogpIscrizioneBozza_v1';
+  const DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 giorni: oltre, la bozza si ignora
+  const DRAFT_FIELD_IDS = [
+    'socioFirstName','socioLastName','socioEmail','socioPhonePrefix','socioPhone',
+    'sessoSocio','cfSocio','dataNascitaSocio',
+    'parentFirstName','parentLastName','parentEmail','parentPhonePrefix','parentPhone',
+    'parentCF','parentIdPratica',
+    'volFirstName','volLastName','sessoVolontario','cfVolontario','dataNascitaVolontario',
+    'volEmail','volPhonePrefix','volPhone','musicSkills'
+  ];
+
+  const hasLocalStorage = (function () {
+    try { const k = '__ogpTest'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; }
+    catch (e) { return false; }
+  })();
+
+  let draftSaveTimer = null;
+  function scheduleSaveDraft() {
+    if (!hasLocalStorage) return;
+    clearTimeout(draftSaveTimer);
+    draftSaveTimer = setTimeout(saveDraft, 500);
+  }
+
+  function saveDraft() {
+    if (!hasLocalStorage) return;
+    const campi = {};
+    DRAFT_FIELD_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) campi[id] = el.value;
+    });
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ ruolo: ruoloScelto, campi, salvato: Date.now() }));
+    } catch (e) { /* storage pieno o disabilitato: la bozza semplicemente non si salva */ }
+  }
+
+  function clearDraft() {
+    if (!hasLocalStorage) return;
+    try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  }
+
+  function loadDraftIfAny() {
+    if (!hasLocalStorage) return null;
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return null;
+      const bozza = JSON.parse(raw);
+      if (!bozza || !bozza.salvato || (Date.now() - bozza.salvato) > DRAFT_MAX_AGE_MS) {
+        clearDraft();
+        return null;
+      }
+      return bozza;
+    } catch (e) { return null; }
+  }
+
+  let bozzaInAttesa = null;
+
+  function initDraft() {
+    bozzaInAttesa = loadDraftIfAny();
+    const banner = document.getElementById('draftBanner');
+    if (banner) banner.style.display = bozzaInAttesa ? 'block' : 'none';
+  }
+
+  function resumeDraft() {
+    const banner = document.getElementById('draftBanner');
+    if (banner) banner.style.display = 'none';
+    if (!bozzaInAttesa) return;
+    Object.keys(bozzaInAttesa.campi || {}).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = bozzaInAttesa.campi[id];
+    });
+    syncSessoToggle('sessoSocio');
+    syncSessoToggle('sessoVolontario');
+    if (bozzaInAttesa.ruolo) { selectRole(bozzaInAttesa.ruolo); goToStep2(); }
+    bozzaInAttesa = null;
+  }
+
+  function discardDraft() {
+    clearDraft();
+    bozzaInAttesa = null;
+    const banner = document.getElementById('draftBanner');
+    if (banner) banner.style.display = 'none';
+  }
+
+  // Un solo listener delegato su document invece di agganciarsi a ogni singolo
+  // campo: più semplice da mantenere in sincronia se in futuro si aggiungono
+  // altri campi testuali all'elenco DRAFT_FIELD_IDS.
+  ['input', 'change'].forEach(ev => {
+    document.addEventListener(ev, e => {
+      if (e.target && DRAFT_FIELD_IDS.indexOf(e.target.id) >= 0) scheduleSaveDraft();
+    });
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     FIRMA
+     ══════════════════════════════════════════════════════════════ */
+  const canvasState = {};
+
+  function initSignatureCanvas(canvasId) {
+    if (canvasState[canvasId]) return;
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round(rect.width * dpr));
+    canvas.height = Math.max(1, Math.round(rect.height * dpr));
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = 2.4;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = '#2c2d80';
+
+    canvasState[canvasId] = { canvas, ctx, hasSigned: false };
+    let drawing = false;
+
+    function getPos(e) {
+      const r = canvas.getBoundingClientRect();
+      const cx = e.touches ? e.touches[0].clientX : e.clientX;
+      const cy = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: cx - r.left, y: cy - r.top };
+    }
+
+    function startDraw(e) {
+      drawing = true;
+      const p = getPos(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      canvasState[canvasId].hasSigned = true;
+      clearError(canvasId);
+    }
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    }
+    function stopDraw() { drawing = false; }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDraw);
+    canvas.addEventListener('mouseleave', stopDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', stopDraw);
+  }
+
+  function clearCanvas(canvasId) {
+    const st = canvasState[canvasId];
+    if (!st) return;
+    st.ctx.clearRect(0, 0, st.canvas.width, st.canvas.height);
+    st.hasSigned = false;
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     SESSO — due pulsanti invece della <select> nativa (vedi CSS .sesso-btn):
+     su alcuni browser/webview mobili il picker nativo di una <select> può
+     restare "muto" al tocco. L'input nascosto con lo stesso id mantiene
+     invariati validazione, bozza e payload di invio.
+     ══════════════════════════════════════════════════════════════ */
+  function syncSessoToggle(id) {
+    const val = (document.getElementById(id) || {}).value || '';
+    document.querySelectorAll('#sesso_' + id + ' .sesso-btn').forEach(b => {
+      b.classList.toggle('selected', b.getAttribute('data-value') === val);
+    });
+  }
+
+  function setSesso(id, val) {
+    document.getElementById(id).value = val;
+    syncSessoToggle(id);
+    clearError(id);
+    hideGlobalError();
+    scheduleSaveDraft();
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     AGGANCI LIVE: maschere mentre si scrive, errori quando si esce
+     ══════════════════════════════════════════════════════════════ */
+  function bind(id, onInput, onBlur) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (onInput) el.addEventListener('input', () => { onInput(el); clearError(id); hideGlobalError(); });
+    if (onBlur) el.addEventListener('blur', () => { if ((el.value || '').trim()) onBlur(); });
+  }
+
+  ['parentCF','cfVolontario','cfSocio'].forEach(id => bind(id, maskCF, () => vCF(id, true)));
+  bind('parentIdPratica', maskIdPratica, () => vIdPratica('parentIdPratica'));
+  ['parentEmail','socioEmail'].forEach(id => bind(id, maskEmail, () => vEmail(id, true)));
+  bind('volEmail', maskEmail, () => vEmail('volEmail', false));
+  bind('parentPhone', maskPhone, () => vPhone('parentPhone','parentPhonePrefix', true));
+  bind('socioPhone', maskPhone, () => vPhone('socioPhone','socioPhonePrefix', true));
+  bind('volPhone', maskPhone, () => vPhone('volPhone','volPhonePrefix', false));
+  ['parentPhonePrefix','socioPhonePrefix','volPhonePrefix'].forEach(id => bind(id, maskPrefix, null));
+  bind('dataNascitaVolontario', null, () => vData('dataNascitaVolontario','minore'));
+  bind('dataNascitaSocio', null, () => vData('dataNascitaSocio','adulto'));
+  ['parentFirstName','parentLastName','volFirstName','volLastName','socioFirstName','socioLastName']
+    .forEach(id => bind(id, null, () => vRequired(id)));
+  ['tcMinor','tcOrdinary'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', () => { if (el.checked) clearError(id); });
+  });
+
+  /* ══════════════════════════════════════════════════════════════
+     BARRA DI PROGRESSO DELL'INVIO
+     Copre solo ciò che sappiamo davvero misurare: la lettura dei file in
+     base64 (un passo per file). L'ultimo tratto — la chiamata a
+     google.script.run — non espone un progresso reale, quindi "avanza"
+     lentamente da sola finché non arriva la risposta (creep).
+     ══════════════════════════════════════════════════════════════ */
+  function updateProgress(pct, label) {
+    const bar = document.getElementById('uploadProgressBar');
+    const txt = document.getElementById('uploadProgressLabel');
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    if (txt && label !== undefined) txt.textContent = label;
+  }
+
+  let progressCreepTimer = null;
+  function fermaCreep() {
+    if (progressCreepTimer) { clearInterval(progressCreepTimer); progressCreepTimer = null; }
+  }
+  function avviaCreep(da, a, ms) {
+    fermaCreep();
+    let pct = da;
+    progressCreepTimer = setInterval(() => {
+      pct = Math.min(a, pct + 1);
+      updateProgress(pct);
+      if (pct >= a) fermaCreep();
+    }, ms);
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     INVIO
+     ══════════════════════════════════════════════════════════════ */
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve({ fileName: file.name, mimeType: file.type || 'application/octet-stream', base64: reader.result });
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Sequenziale (non Promise.all) apposta: con 2-4 file la differenza di
+  // tempo è trascurabile, e in cambio possiamo avanzare la barra di
+  // progresso un file alla volta invece che con un unico salto finale.
+  async function filesToBase64(id, onEach) {
+    const out = [];
+    for (const file of (fileStore[id] || [])) {
+      out.push(await fileToBase64(file));
+      if (onEach) onEach();
+    }
+    return out;
+  }
+
+  async function submitForm(tipo) {
+    const isMinor = (tipo === 'Volontario');
+    hideGlobalError();
+
+    let ok = true;
+    if (isMinor) {
+      ok = vRequired('parentFirstName') && ok;
+      ok = vRequired('parentLastName') && ok;
+      ok = vEmail('parentEmail', true) && ok;
+      ok = vPhone('parentPhone', 'parentPhonePrefix', true) && ok;
+      ok = vCF('parentCF', true) && ok;
+      ok = vIdPratica('parentIdPratica') && ok;
+      ok = vRequired('volFirstName') && ok;
+      ok = vRequired('volLastName') && ok;
+      ok = vRequired('sessoVolontario') && ok;
+      ok = vCF('cfVolontario', true) && ok;
+      ok = vData('dataNascitaVolontario', 'minore') && ok;
+      ok = vEmail('volEmail', false) && ok;
+      ok = vPhone('volPhone', 'volPhonePrefix', false) && ok;
+      ok = vFile('fileParentId') && ok;
+      ok = vFile('fileVolId') && ok;
+      ok = vFirma('canvasMinor') && ok;
+      ok = vConsenso('tcMinor') && ok;
+    } else {
+      ok = vRequired('socioFirstName') && ok;
+      ok = vRequired('socioLastName') && ok;
+      ok = vEmail('socioEmail', true) && ok;
+      ok = vPhone('socioPhone', 'socioPhonePrefix', true) && ok;
+      ok = vRequired('sessoSocio') && ok;
+      ok = vCF('cfSocio', true) && ok;
+      ok = vData('dataNascitaSocio', 'adulto') && ok;
+      ok = vFile('fileSocioId') && ok;
+      ok = vFirma('canvasOrdinary') && ok;
+      ok = vConsenso('tcOrdinary') && ok;
+    }
+
+    if (!ok) {
+      showGlobalError(t('err_summary'));
+      const primo = document.querySelector('.err.show');
+      if (primo) scrollToEl(primo.closest('.field') || primo.closest('.consent-box') || primo);
+      return;
+    }
+
+    // Tetto complessivo: oltre questa soglia l'invio a Google Apps Script
+    // rischia di non arrivare a destinazione.
+    const pesoTotale = Object.keys(fileStore)
+      .reduce((s, k) => s + fileStore[k].reduce((a, f) => a + f.size, 0), 0);
+    if (pesoTotale > MAX_BYTES_TOTAL) { showGlobalError(t('err_file_total')); return; }
+
+    document.getElementById('loadingOverlay').classList.add('show');
+    updateProgress(0, '');
+
+    try {
+      let docIdentitaParent = [], docIdentitaVol = [], docIdentitaSocio = [], firmaBase64 = null;
+
+      const totaleFile = isMinor
+        ? fileStore.fileParentId.length + fileStore.fileVolId.length
+        : fileStore.fileSocioId.length;
+      let fileFatti = 0;
+      function segnaFileFatto() {
+        fileFatti++;
+        // L'ultimo 10% è riservato all'invio vero e proprio al server.
+        const pct = totaleFile ? Math.round((fileFatti / totaleFile) * 90) : 90;
+        updateProgress(pct, t('progress_files').replace('{done}', fileFatti).replace('{total}', totaleFile));
+      }
+
+      if (isMinor) {
+        docIdentitaParent = await filesToBase64('fileParentId', segnaFileFatto);
+        docIdentitaVol = await filesToBase64('fileVolId', segnaFileFatto);
+        firmaBase64 = canvasState['canvasMinor'].canvas.toDataURL('image/png');
+      } else {
+        docIdentitaSocio = await filesToBase64('fileSocioId', segnaFileFatto);
+        firmaBase64 = canvasState['canvasOrdinary'].canvas.toDataURL('image/png');
+      }
+
+      updateProgress(92, t('progress_sending'));
+      avviaCreep(92, 98, 400);
+
+      const val = id => (document.getElementById(id).value || '').trim();
+
+      const payload = {
+        tipoAssociato: isMinor ? 'Volontario' : 'Socio Ordinario',
+        // Socio Ordinario
+        nomeSocio: isMinor ? '' : val('socioFirstName'),
+        cognomeSocio: isMinor ? '' : val('socioLastName'),
+        sessoSocio: isMinor ? '' : val('sessoSocio'),
+        cfSocio: isMinor ? '' : val('cfSocio'),
+        dataNascitaSocio: isMinor ? '' : val('dataNascitaSocio'),
+        emailSocio: isMinor ? '' : val('socioEmail'),
+        prefissoTelSocio: isMinor ? '' : val('socioPhonePrefix'),
+        telSocio: isMinor ? '' : val('socioPhone'),
+        // Genitore
+        nomeGenitore: isMinor ? val('parentFirstName') : '',
+        cognomeGenitore: isMinor ? val('parentLastName') : '',
+        emailGenitore: isMinor ? val('parentEmail') : '',
+        prefissoTelGenitore: isMinor ? val('parentPhonePrefix') : '',
+        telGenitore: isMinor ? val('parentPhone') : '',
+        cfGenitore: isMinor ? val('parentCF') : '',
+        idPraticaGenitore: isMinor ? val('parentIdPratica') : '',
+        // Volontario
+        nomeVolontario: isMinor ? val('volFirstName') : '',
+        cognomeVolontario: isMinor ? val('volLastName') : '',
+        sessoVolontario: isMinor ? val('sessoVolontario') : '',
+        cfVolontario: isMinor ? val('cfVolontario') : '',
+        dataNascitaVolontario: isMinor ? val('dataNascitaVolontario') : '',
+        emailVolontario: isMinor ? val('volEmail') : '',
+        prefissoTelVol: isMinor ? val('volPhonePrefix') : '',
+        telVolontario: isMinor ? val('volPhone') : '',
+        musicSkills: isMinor ? val('musicSkills') : '',
+        // Liberatoria immagini/video (facoltativa, granulare per canale)
+        libSito: document.getElementById(isMinor ? 'libSitoMinor' : 'libSitoOrd').checked,
+        libSocial: document.getElementById(isMinor ? 'libSocialMinor' : 'libSocialOrd').checked,
+        libStampa: document.getElementById(isMinor ? 'libStampaMinor' : 'libStampaOrd').checked,
+        libVideo: document.getElementById(isMinor ? 'libVideoMinor' : 'libVideoOrd').checked,
+        // Allegati e firma
+        docIdentitaParent, docIdentitaVol, docIdentitaSocio, firmaBase64
+      };
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).salvaModuloIscrizione(payload);
+      } else {
+        setTimeout(() => onSuccess({ success: true, idPratica: 'PR-00042' }), 1200);   // solo dev locale
+      }
+    } catch (err) {
+      onFailure(err);
+    }
+  }
+
+  function onSuccess(res) {
+    fermaCreep();
+    document.getElementById('loadingOverlay').classList.remove('show');
+    if (res && res.success) {
+      updateProgress(100, '');
+      clearDraft();
+      document.getElementById('stepMinor').style.display = 'none';
+      document.getElementById('stepOrdinary').style.display = 'none';
+      document.getElementById('step1').style.display = 'none';
+      hideGlobalError();
+      if (res.idPratica) {
+        const badge = document.getElementById('idPraticaBadge');
+        badge.textContent = 'ID Pratica: ' + res.idPratica;
+        badge.style.display = 'inline-block';
+      }
+      document.getElementById('thankYouBox').style.display = 'block';
+      setStep(3);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      showGlobalError(t('err_send'));
+    }
+  }
+
+  function onFailure() {
+    fermaCreep();
+    document.getElementById('loadingOverlay').classList.remove('show');
+    showGlobalError(t('err_send'));
+  }
+
+  /* ══════════════════════════════════════════════════════════════
+     Auto-resize quando il modulo è incorporato nel sito pubblico.
+     window.top perché Google avvolge già l'output di HtmlService in un
+     proprio iframe interno: window.parent raggiungerebbe solo quello.
+     ══════════════════════════════════════════════════════════════ */
+  (function initAutoResize() {
+    if (window.top === window.self) return;
+    function reportHeight() {
+      try { window.top.postMessage({ ogpForm: 'resize', height: document.documentElement.scrollHeight }, '*'); }
+      catch (e) {}
+    }
+    if (window.ResizeObserver) new ResizeObserver(reportHeight).observe(document.body);
+    else { window.addEventListener('resize', reportHeight); setInterval(reportHeight, 800); }
+    reportHeight();
+  })();
+
+  initDraft();
+</script>
+
+</body>
+</html>
