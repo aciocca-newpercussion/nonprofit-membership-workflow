@@ -1,0 +1,52 @@
+LICENZA D'USO - Nonprofit Membership Workflow
+Copyright (c) 2026 Orchestra Giovanile Percussioni APS ETS. Tutti i diritti riservati.
+
+Titolare del software: Orchestra Giovanile Percussioni APS ETS.
+Sviluppato da: Alessio Ciocca.
+
+Questo software e distribuito con LICENZA DUALE.
+
+
+1) USO NON-PROFIT (gratuito)
+
+   Gli enti senza scopo di lucro formalmente costituiti (in Italia: APS, ODV,
+   ETS ai sensi del D.Lgs. 117/2017; o equivalenti esteri) possono utilizzare
+   questo software gratuitamente per le proprie attivita istituzionali interne.
+
+
+2) USO FOR-PROFIT (a pagamento)
+
+   Aziende, liberi professionisti e qualsiasi soggetto che persegua uno scopo
+   di lucro devono contattare il Titolare per concordare una licenza a
+   pagamento prima di utilizzare il software.
+
+
+3) ATTRIBUZIONE OBBLIGATORIA NELLE EMAIL (art. 4)
+
+   Tutte le comunicazioni email inviate dal software verso destinatari esterni
+   devono mantenere il footer di attribuzione automatico (modulo 12_footer).
+   La sua rimozione o alterazione costituisce violazione della licenza.
+
+   Il footer attribuisce il software a Orchestra Giovanile Percussioni APS ETS
+   e a nessun altro. Il nome dello sviluppatore non compare, e non va aggiunto,
+   nelle email inviate dal software.
+
+
+4) CREDITO ALLO SVILUPPATORE
+
+   Il credito ad Alessio Ciocca va riportato nella documentazione e nei
+   documenti che accompagnano il software - questo file di licenza, il README,
+   le pagine di documentazione - e solo li'. Chi redistribuisce il software o
+   ne pubblica documentazione derivata mantiene questo credito.
+
+
+5) BUONA FEDE
+
+   Il rispetto di questi termini e affidato alla correttezza di chi usa il
+   software. Il software non raccoglie dati sull'utilizzo e non comunica nulla
+   al Titolare.
+
+
+Contatti per licenze a pagamento e informazioni:
+   Orchestra Giovanile Percussioni APS ETS
+   direzione@newpercussion.it - https://www.newpercussion.it/workflow

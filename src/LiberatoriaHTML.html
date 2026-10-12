@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liberatoria immagini e riprese</title>
+<style>
+  /* Sistema visivo {{NOME_GRUPPO}}. L'arancione è un FONDO, mai un inchiostro su chiaro:
+     su bianco fa 2,4:1, sotto la soglia WCAG anche per una semplice icona.
+     Dove serve un testo caldo si usa l'ambra scuro #9A5B00. */
+  :root{
+    --blu:{{COLORE_BLU}}; --blu-scuro:#1a1f4e; --arancio:{{COLORE_ARANCIO}}; --ambra:#9A5B00;
+    --cream:{{COLORE_BEIGE}}; --grigio:#5D5F5F; --inchiostro:#1a1a1a;
+    --bordo:rgba(44,51,133,.16); --verde:#1e7a3c; --rosso:#9a1c1c;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; background:var(--cream); color:var(--inchiostro);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.6;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:0 18px 64px;}
+  header{background:var(--blu); color:#fff; padding:28px 0 26px; margin-bottom:26px;}
+  header .wrap{display:flex; align-items:center; gap:14px;}
+  header img{height:44px; width:auto; background:#fff; border-radius:9px; padding:4px;}
+  header b{display:block; font-size:17px; letter-spacing:.2px;}
+  header span{font-size:12.5px; opacity:.82; text-transform:uppercase; letter-spacing:.6px;}
+  h1{font-size:clamp(22px,4.6vw,30px); line-height:1.22; color:var(--blu); margin:0 0 10px;}
+  h2{font-size:19px; color:var(--blu); margin:30px 0 10px;}
+  p{margin:0 0 14px;}
+  .occhiello{display:inline-block; background:var(--arancio); color:#1a1a1a; font-size:11.5px;
+    font-weight:700; letter-spacing:1.1px; text-transform:uppercase; padding:5px 11px;
+    border-radius:999px; margin-bottom:14px;}
+  .scheda{background:#fff; border:1px solid var(--bordo); border-radius:14px; padding:20px 22px;
+    margin-bottom:18px; box-shadow:0 1px 2px rgba(26,31,78,.04), 0 8px 22px rgba(26,31,78,.05);}
+  .scheda.calda{border-left:4px solid var(--arancio);}
+  .dati{display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:14.6px; margin:0;}
+  .dati dt{color:var(--blu); font-weight:600;}
+  .dati dd{margin:0;}
+  .legale{font-size:14.6px; color:#2b2b2b;}
+  .legale p{margin:0 0 10px;}
+  .nota{font-size:13.6px; color:var(--grigio);}
+  .canale{display:flex; gap:12px; align-items:flex-start; padding:13px 0; border-top:1px solid var(--bordo);}
+  .canale:first-of-type{border-top:0;}
+  .canale input{width:22px; height:22px; margin:2px 0 0; flex:0 0 auto; accent-color:var(--blu);}
+  .canale label{flex:1; cursor:pointer; font-size:15px;}
+  .canale .sotto{display:block; font-size:13px; color:var(--grigio); margin-top:2px;}
+  fieldset{border:0; margin:0; padding:0;}
+  legend{font-size:19px; color:var(--blu); font-weight:700; padding:0; margin-bottom:6px;}
+  label.campo{display:block; font-size:14px; font-weight:600; color:var(--blu); margin:14px 0 5px;}
+  input[type=text],input[type=email]{width:100%; padding:12px 13px; font-size:16px;
+    border:1px solid var(--bordo); border-radius:10px; background:#fff; font-family:inherit;}
+  input[type=text]:focus,input[type=email]:focus{outline:3px solid var(--arancio); outline-offset:1px;}
+  .firma-box{border:2px dashed rgba(44,51,133,.3); border-radius:12px; background:#fff; position:relative;}
+  canvas{display:block; width:100%; height:170px; touch-action:none; border-radius:10px;}
+  .firma-hint{position:absolute; left:0; right:0; bottom:12px; text-align:center;
+    font-size:13px; color:#9a9a9a; pointer-events:none;}
+  .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-size:16px; font-weight:600; padding:14px 24px; border-radius:999px; border:0;
+    cursor:pointer; font-family:inherit; text-decoration:none;}
+  .btn.primario{background:var(--arancio); color:#1a1a1a;}
+  .btn.primario:hover{background:#d98204;}
+  .btn.secondario{background:#fff; color:var(--blu); border:1px solid var(--bordo);}
+  .btn.secondario:hover{border-color:var(--blu);}
+  .btn:disabled{opacity:.5; cursor:not-allowed;}
+  .azioni{display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-top:8px;}
+  .avviso{border-radius:12px; padding:14px 16px; font-size:14.6px; margin:0 0 16px;}
+  .avviso.info{background:rgba(44,51,133,.06); border:1px solid var(--bordo);}
+  .avviso.ok{background:rgba(30,122,60,.08); border:1px solid rgba(30,122,60,.28); color:#14532d;}
+  .avviso.ko{background:rgba(154,28,28,.07); border:1px solid rgba(154,28,28,.3); color:#7f1d1d;}
+  .avviso.calda{background:rgba(242,145,4,.13); border:1px solid rgba(154,91,0,.32); color:#5a3600;}
+  .nascosto{display:none !important;}
+  footer{margin-top:34px; padding-top:18px; border-top:1px solid var(--bordo);
+    font-size:12.5px; color:var(--grigio);}
+  .sr{position:absolute; left:-9999px;}
+  @media (max-width:600px){
+    .dati{grid-template-columns:1fr; gap:2px;}
+    .dati dd{margin-bottom:9px;}
+    .btn{width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <img id="logo" src="" alt="">
+    <div>
+      <b>{{NOME_GRUPPO}}</b>
+      <span>Autorizzazione immagini e riprese</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- Token non valido, scaduto o bloccato -->
+  <section id="vistaErrore" class="nascosto">
+    <span class="occhiello">Collegamento non utilizzabile</span>
+    <h1>Non possiamo aprire la richiesta</h1>
+    <p id="motivoErrore" class="legale"></p>
+    <p class="nota">Se pensi che sia un errore, scrivici a <a id="mailto1" href="#"></a>
+       indicando nome e cognome: ti rimandiamo un collegamento nuovo.</p>
+  </section>
+
+  <!-- Già firmata -->
+  <section id="vistaGiaFirmata" class="nascosto">
+    <span class="occhiello">Già registrata</span>
+    <h1>Questa firma è già stata raccolta</h1>
+    <p class="legale">La risposta risulta registrata e non serve rifarla. Se vuoi cambiarla —
+      revocare o concedere un canale — basta scriverci: la revoca non deve essere motivata e non
+      ha conseguenze sul rapporto associativo.</p>
+    <p><a id="linkPdf" class="btn secondario nascosto" href="#" target="_blank" rel="noopener">Apri il documento firmato</a></p>
+    <p class="nota">Scrivi a <a id="mailto2" href="#"></a> oppure a
+       <a href="/cdn-cgi/l/email-protection#98e3e3ddd5d9d1d4c7c8cad1ced9dbc1e5e5">{{EMAIL_PRIVACY}}</a>.</p>
+  </section>
+
+  <!-- Il modulo -->
+  <section id="vistaModulo" class="nascosto">
+    <span class="occhiello" id="occhielloRuolo">La tua risposta</span>
+    <h1 id="titoloPagina">Foto, video e registrazioni</h1>
+
+    <div class="avviso calda">
+      <strong>Puoi dire no a tutto.</strong> La scelta non incide sull'ammissione, sulla quota,
+      sulla partecipazione ai concerti né su nessun altro diritto associativo, e si può cambiare in
+      qualsiasi momento. Quello che ci serve è una risposta, qualunque sia.
+    </div>
+
+    <div class="scheda">
+      <dl class="dati">
+        <dt>Pratica</dt><dd id="dPratica"></dd>
+        <dt>Intestata a</dt><dd id="dNome"></dd>
+        <dt>Tipo di associato</dt><dd id="dTipo"></dd>
+        <dt>Versione del testo</dt><dd id="dVersione"></dd>
+      </dl>
+    </div>
+
+    <div class="scheda legale" id="boxTesto"></div>
+
+    <form id="modulo" novalidate>
+      <div class="scheda">
+        <fieldset>
+          <legend>Che cosa autorizzi</legend>
+          <p class="nota">Ogni voce è indipendente. Lasciare tutto deselezionato equivale a un
+             rifiuto, ed è una risposta valida.</p>
+          <div id="canali"></div>
+          <div class="azioni" style="margin-top:14px">
+            <button type="button" class="btn secondario" id="btnNegaTutto">Non autorizzo nulla</button>
+            <button type="button" class="btn secondario" id="btnAutorizzaTutto">Autorizzo tutto</button>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Identificazione del secondo genitore -->
+      <div class="scheda nascosto" id="boxCF">
+        <fieldset>
+          <legend>Conferma che sei tu</legend>
+          <p class="nota">Questo collegamento è stato generato dall'altro genitore. Per firmare,
+             inserisci il <strong>tuo</strong> codice fiscale.</p>
+          <label class="campo" for="cfFirmatario">Il tuo codice fiscale</label>
+          <input type="text" id="cfFirmatario" maxlength="16" autocapitalize="characters"
+                 autocomplete="off" spellcheck="false" inputmode="text">
+        </fieldset>
+      </div>
+
+      <!-- Secondo genitore, chiesto al primo -->
+      <div class="scheda nascosto" id="boxSecondoGenitore">
+        <fieldset>
+          <legend>L'altro genitore</legend>
+          <p class="nota">Per un minorenne il consenso lo danno entrambi i titolari della
+             responsabilità genitoriale (Statuto Art. 8.7, art. 316 del codice civile). Riceverà un
+             collegamento personale e firmerà a sua volta. <strong>Per rifiutare basta la tua
+             firma</strong>: in quel caso questi campi non servono.</p>
+          <label class="campo" for="sgNome">Nome e cognome</label>
+          <input type="text" id="sgNome" autocomplete="off">
+          <label class="campo" for="sgEmail">Email</label>
+          <input type="email" id="sgEmail" autocomplete="off" inputmode="email">
+          <label class="campo" for="sgCF">Codice fiscale</label>
+          <input type="text" id="sgCF" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false">
+          <div class="canale" style="margin-top:16px;border-top:1px solid var(--bordo)">
+            <input type="checkbox" id="genitoreUnico">
+            <label for="genitoreUnico">Esercito da solo la responsabilità genitoriale
+              <span class="sotto">Genitore unico, affido esclusivo o tutela. Dichiarazione resa ai
+              sensi dell'art. 47 del DPR 445/2000, consapevole delle responsabilità penali per
+              dichiarazioni mendaci (art. 76).</span>
+            </label>
+          </div>
+          <div id="boxMotivoUnico" class="nascosto">
+            <label class="campo" for="motivoUnico">In quale qualità (facoltativo)</label>
+            <input type="text" id="motivoUnico" placeholder="es. affido esclusivo, tutore, genitore unico">
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Firma -->
+      <div class="scheda">
+        <fieldset>
+          <legend>La firma</legend>
+          <label class="campo" for="nomeFirmatario">Nome e cognome di chi firma</label>
+          <input type="text" id="nomeFirmatario" autocomplete="name">
+          <label class="campo" for="firma">Firma</label>
+          <div class="firma-box">
+            <canvas id="firma" aria-label="Area per la firma"></canvas>
+            <span class="firma-hint" id="hintFirma">Firma qui, col dito o col mouse</span>
+          </div>
+          <div class="azioni" style="margin-top:10px">
+            <button type="button" class="btn secondario" id="btnPulisciFirma">Cancella la firma</button>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Assenso del minore, dai 14 anni -->
+      <div class="scheda nascosto" id="boxAssenso">
+        <fieldset>
+          <legend>L'assenso del giovane musicista</legend>
+          <p class="nota">Dai 14 anni compiuti la legge riconosce al minore una voce propria
+             (art. 2-quinquies del Codice in materia di protezione dei dati personali):
+             <span id="nomeMinoreAssenso"></span> firma accanto ai genitori. Se preferisce non
+             firmare, si può proseguire senza.</p>
+          <div class="firma-box">
+            <canvas id="firmaMinore" aria-label="Area per la firma del minore"></canvas>
+            <span class="firma-hint" id="hintFirmaMinore">Firma qui</span>
+          </div>
+          <div class="azioni" style="margin-top:10px">
+            <button type="button" class="btn secondario" id="btnPulisciMinore">Cancella</button>
+          </div>
+        </fieldset>
+      </div>
+
+      <div id="erroriModulo" class="avviso ko nascosto" role="alert"></div>
+
+      <div class="azioni">
+        <button type="submit" class="btn primario" id="btnInvia">Registra la mia risposta</button>
+        <span class="nota" id="statoInvio" role="status"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- Esito -->
+  <section id="vistaFatto" class="nascosto">
+    <span class="occhiello">Registrata</span>
+    <h1 id="titoloFatto">Grazie, abbiamo registrato la risposta</h1>
+    <div id="messaggioFatto" class="legale"></div>
+    <p><a id="linkPdfFatto" class="btn secondario nascosto" href="#" target="_blank" rel="noopener">Apri il documento firmato</a></p>
+    <p class="nota">Ti abbiamo mandato una copia per email. Puoi cambiare idea quando vuoi
+       scrivendo a <a id="mailto3" href="#"></a>.</p>
+  </section>
+
+  <footer>
+    <div id="titolare"></div>
+    <div style="margin-top:6px">&copy; <span id="anno"></span> {{NOME_LEGALE}} &middot; Tutti i diritti riservati</div>
+  </footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // I dati arrivano dal server con uno scriptlet: in IFRAME_SANDBOX la query
+  // string dell'URL /exec NON è leggibile dal client, quindi window.location
+  // qui è inutilizzabile (vedi la nota in 16_ModuloPagamentoWebApp.gs).
+  const DATI = <?!= JSON.stringify(DATI) ?>;
+  const TOKEN_PRESENTE = DATI.ok;
+
+  const $ = function(id) { return document.getElementById(id); };
+  const mostra = function(id) { $(id).classList.remove('nascosto'); };
+  const nascondi = function(id) { $(id).classList.add('nascosto'); };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    $('anno').textContent = new Date().getFullYear();
+    if (DATI.logoUrl) $('logo').src = DATI.logoUrl;
+    const mail = DATI.emailContatto || '{{EMAIL_MITTENTE}}';
+    ['mailto1','mailto2','mailto3'].forEach(function(id) {
+      const a = $(id); if (!a) return;
+      a.href = 'mailto:' + mail; a.textContent = mail;
+    });
+    if (DATI.testo) $('titolare').textContent = DATI.testo.titolare;
+
+    if (!DATI.ok) {
+      $('motivoErrore').textContent = DATI.motivo || 'Collegamento non valido.';
+      mostra('vistaErrore');
+      return;
+    }
+    if (DATI.giaFirmata) {
+      if (DATI.pdfUrl) { $('linkPdf').href = DATI.pdfUrl; $('linkPdf').classList.remove('nascosto'); }
+      mostra('vistaGiaFirmata');
+      return;
+    }
+    mostra('vistaModulo');
+    // I pad si creano DOPO aver mostrato la sezione: un canvas dentro un
+    // display:none misura 0x0, e toDataURL restituirebbe "data:," — una firma
+    // vuota che sembra una firma. È un errore che non darebbe nessun segnale.
+    preparaModulo();
+  });
+
+  /* ── Composizione del modulo ─────────────────────────────────────────────── */
+
+  function preparaModulo() {
+    const t = DATI.testo;
+    $('dPratica').textContent = DATI.idPraticaMascherato;
+    $('dNome').textContent = DATI.nome;
+    $('dTipo').textContent = DATI.tipo;
+    $('dVersione').textContent = t.versione + ' (in vigore dal ' + t.inVigoreDal + ')';
+    $('titoloPagina').textContent = t.titolo;
+
+    if (DATI.ruolo === 'genitore2') {
+      $('occhielloRuolo').textContent = 'Firma del secondo genitore';
+      mostra('boxCF');
+    } else if (DATI.tipo === 'Volontario') {
+      $('occhielloRuolo').textContent = 'Firma del genitore o tutore';
+      mostra('boxSecondoGenitore');
+    }
+
+    if (DATI.richiedeAssensoMinore) {
+      $('nomeMinoreAssenso').textContent = DATI.nomeMinore || 'Il giovane musicista';
+      mostra('boxAssenso');
+    }
+
+    // Il testo legale, nell'ordine in cui è scritto nel codice.
+    const html = [];
+    t.premessa.forEach(function(p) { html.push('<p>' + esc(p) + '</p>'); });
+    html.push('<p>' + esc(t.eventiCoperti) + '</p>');
+    html.push('<h2>' + esc(t.parteA.titolo) + '</h2>');
+    t.parteA.corpo.forEach(function(p) { html.push('<p>' + esc(p) + '</p>'); });
+    html.push('<h2>' + esc(t.parteB.titolo) + '</h2>');
+    t.parteB.corpo.forEach(function(p) { html.push('<p>' + esc(p) + '</p>'); });
+    html.push('<h2>' + esc(t.revoca.titolo) + '</h2>');
+    t.revoca.corpo.forEach(function(p) { html.push('<p>' + esc(p) + '</p>'); });
+    html.push('<p>' + esc(t.durata) + '</p>');
+    html.push('<h2>' + esc(t.minori.titolo) + '</h2>');
+    t.minori.corpo.forEach(function(p) { html.push('<p>' + esc(p) + '</p>'); });
+    html.push('<p class="nota">' + esc(t.firma) + '</p>');
+    $('boxTesto').innerHTML = html.join('');
+
+    // I sette canali, con lo stato attuale già spuntato.
+    $('canali').innerHTML = DATI.canaliElenco.map(function(c) {
+      const on = DATI.canali && DATI.canali[c.chiave] ? ' checked' : '';
+      return '<div class="canale">' +
+        '<input type="checkbox" id="ch_' + c.chiave + '" data-canale="' + c.chiave + '"' + on + '>' +
+        '<label for="ch_' + c.chiave + '">' + esc(c.etichetta) + '</label></div>';
+    }).join('');
+
+    $('btnNegaTutto').addEventListener('click', function() { impostaTutti(false); });
+    $('btnAutorizzaTutto').addEventListener('click', function() { impostaTutti(true); });
+    $('genitoreUnico').addEventListener('change', function() {
+      $('boxMotivoUnico').classList.toggle('nascosto', !this.checked);
+    });
+    ['cfFirmatario','sgCF'].forEach(function(id) {
+      const el = $(id); if (!el) return;
+      el.addEventListener('input', function() {
+        this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16);
+      });
+    });
+
+    firmaPad = nuovoPad('firma', 'hintFirma');
+    $('btnPulisciFirma').addEventListener('click', function() { firmaPad.pulisci(); });
+    if (DATI.richiedeAssensoMinore) {
+      firmaMinorePad = nuovoPad('firmaMinore', 'hintFirmaMinore');
+      $('btnPulisciMinore').addEventListener('click', function() { firmaMinorePad.pulisci(); });
+    }
+    $('modulo').addEventListener('submit', invia);
+  }
+
+  function impostaTutti(valore) {
+    document.querySelectorAll('#canali input[type=checkbox]').forEach(function(c) { c.checked = valore; });
+  }
+
+  function esc(s) {
+    return String(s === null || s === undefined ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  /* ── Firma a canvas ──────────────────────────────────────────────────────── */
+
+  let firmaPad = null, firmaMinorePad = null;
+
+  function nuovoPad(idCanvas, idHint) {
+    const canvas = $(idCanvas);
+    const ctx = canvas.getContext('2d');
+    let disegnato = false, giu = false;
+
+    function dimensiona() {
+      const dpr = window.devicePixelRatio || 1;
+      const r = canvas.getBoundingClientRect();
+      canvas.width = Math.round(r.width * dpr);
+      canvas.height = Math.round(r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineWidth = 2.4; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = '#2c2d80';
+    }
+    dimensiona();
+    window.addEventListener('resize', function() {
+      // Ridimensionare azzera il tratto: meglio perderlo che salvare una firma
+      // deformata rispetto a quella che la persona ha visto.
+      dimensiona(); disegnato = false; $(idHint).style.display = '';
+    });
+
+    function punto(ev) {
+      const r = canvas.getBoundingClientRect();
+      const t = ev.touches && ev.touches[0] ? ev.touches[0] : ev;
+      return { x: t.clientX - r.left, y: t.clientY - r.top };
+    }
+    function inizia(ev) {
+      ev.preventDefault(); giu = true;
+      const p = punto(ev); ctx.beginPath(); ctx.moveTo(p.x, p.y);
+      $(idHint).style.display = 'none';
+    }
+    function muovi(ev) {
+      if (!giu) return; ev.preventDefault();
+      const p = punto(ev); ctx.lineTo(p.x, p.y); ctx.stroke(); disegnato = true;
+    }
+    function finisci() { giu = false; }
+
+    canvas.addEventListener('mousedown', inizia);
+    canvas.addEventListener('mousemove', muovi);
+    window.addEventListener('mouseup', finisci);
+    canvas.addEventListener('touchstart', inizia, { passive: false });
+    canvas.addEventListener('touchmove', muovi, { passive: false });
+    canvas.addEventListener('touchend', finisci);
+
+    return {
+      get firmato() { return disegnato && canvas.width > 20 && canvas.height > 20; },
+      ridimensiona: dimensiona,
+      dataUrl: function() {
+        if (!disegnato || canvas.width <= 20 || canvas.height <= 20) return '';
+        const url = canvas.toDataURL('image/png');
+        // Difesa finale: un canvas non misurato produce una stringa brevissima.
+        return url && url.length > 1000 ? url : '';
+      },
+      pulisci: function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        disegnato = false; $(idHint).style.display = '';
+      },
+    };
+  }
+
+  /* ── Invio ───────────────────────────────────────────────────────────────── */
+
+  function invia(ev) {
+    ev.preventDefault();
+    const errori = [];
+    const canali = {};
+    let almenoUno = false;
+    document.querySelectorAll('#canali input[type=checkbox]').forEach(function(c) {
+      canali[c.dataset.canale] = c.checked;
+      if (c.checked) almenoUno = true;
+    });
+
+    const nome = $('nomeFirmatario').value.trim();
+    if (nome.length < 3) errori.push('Scrivi il nome e il cognome di chi firma.');
+    const firmaUrl = firmaPad ? firmaPad.dataUrl() : '';
+    if (!firmaPad || !firmaPad.firmato) errori.push('Manca la firma: tracciala nello spazio apposito.');
+    else if (!firmaUrl) errori.push('Non siamo riusciti ad acquisire la firma. Cancellala e rifalla, ' +
+      'oppure ricarica la pagina.');
+
+    if (DATI.ruolo === 'genitore2') {
+      const cf = $('cfFirmatario').value.trim();
+      if (cf.length !== 16) errori.push('Inserisci il tuo codice fiscale (16 caratteri).');
+    }
+
+    // I dati dell'altro genitore servono solo per AUTORIZZARE: per rifiutare
+    // basta una firma, e chiederli sarebbe un ostacolo senza ragione.
+    const unico = $('genitoreUnico') && $('genitoreUnico').checked;
+    if (DATI.tipo === 'Volontario' && DATI.ruolo !== 'genitore2' && almenoUno && !unico) {
+      if ($('sgNome').value.trim().length < 3) errori.push('Indica nome e cognome dell\'altro genitore.');
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('sgEmail').value.trim())) errori.push('Indica un\'email valida per l\'altro genitore.');
+      if ($('sgCF').value.trim().length !== 16) errori.push('Indica il codice fiscale dell\'altro genitore (16 caratteri).');
+    }
+
+    if (errori.length) {
+      $('erroriModulo').innerHTML = errori.map(function(e) { return esc(e); }).join('<br>');
+      mostra('erroriModulo');
+      $('erroriModulo').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    nascondi('erroriModulo');
+
+    $('btnInvia').disabled = true;
+    $('statoInvio').textContent = 'Stiamo registrando la risposta…';
+
+    const payload = {
+      canali: canali,
+      firmaBase64: firmaUrl,
+      nomeFirmatario: nome,
+      cfFirmatario: DATI.ruolo === 'genitore2' ? $('cfFirmatario').value.trim() : '',
+      secondoGenitore: {
+        nome: $('sgNome') ? $('sgNome').value.trim() : '',
+        email: $('sgEmail') ? $('sgEmail').value.trim() : '',
+        cf: $('sgCF') ? $('sgCF').value.trim() : '',
+      },
+      genitoreUnico: { dichiarato: !!unico, motivo: $('motivoUnico') ? $('motivoUnico').value.trim() : '' },
+      assensoMinore: (function() {
+        const u = firmaMinorePad ? firmaMinorePad.dataUrl() : '';
+        return { presente: !!u, firmaBase64: u };
+      })(),
+      userAgent: navigator.userAgent,
+    };
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        $('btnInvia').disabled = false;
+        $('statoInvio').textContent = '';
+        if (!res || !res.ok) {
+          $('erroriModulo').textContent = (res && res.error) || 'Non siamo riusciti a registrare la firma.';
+          mostra('erroriModulo');
+          if (res && res.giaFirmata) { nascondi('vistaModulo'); mostra('vistaGiaFirmata'); }
+          return;
+        }
+        mostraEsito(res);
+      })
+      .withFailureHandler(function(err) {
+        $('btnInvia').disabled = false;
+        $('statoInvio').textContent = '';
+        $('erroriModulo').textContent = 'Si è verificato un problema di collegamento. Riprova fra un minuto.';
+        mostra('erroriModulo');
+      })
+      .liberatoriaRegistraRisposta(getTokenDallaPagina(), payload);
+  }
+
+  // Il token non viene mai riletto dall'URL (in iframe non ci sarebbe): il
+  // server lo ha già iniettato qui dentro insieme al resto dei dati.
+  function getTokenDallaPagina() { return DATI.token || ''; }
+
+  function mostraEsito(res) {
+    nascondi('vistaModulo');
+    const parti = [];
+    if (res.esito === 'Negato') {
+      $('titoloFatto').textContent = 'Abbiamo registrato il tuo no';
+      parti.push('<p>Nessuna immagine, registrazione o video che ti riguarda verrà pubblicato. ' +
+        'La tua iscrizione procede normalmente: il rifiuto non cambia nulla.</p>');
+    } else if (res.attesaSecondoGenitore) {
+      $('titoloFatto').textContent = 'Manca solo la firma dell\'altro genitore';
+      parti.push('<p>Abbiamo scritto a ' + esc(res.nomeSecondoGenitore || 'l\'altro genitore') +
+        ': finché non firma, l\'autorizzazione non è valida e non pubblichiamo nulla.</p>');
+    } else {
+      $('titoloFatto').textContent = 'Grazie, abbiamo registrato la tua risposta';
+      parti.push('<p>Vale solo per i canali che hai autorizzato, e la puoi revocare quando vuoi.</p>');
+    }
+    if (res.prossimoPasso === 'invito_pagamento') {
+      parti.push('<p>Ti è arrivata anche l\'email per completare l\'iscrizione con il versamento ' +
+        'della quota.</p>');
+    } else if (res.prossimoPasso === 'onboarding') {
+      parti.push('<p>Nel frattempo è partito l\'onboarding: fra pochi minuti riceverai le ' +
+        'credenziali dell\'account istituzionale e la tessera.</p>');
+    }
+    $('messaggioFatto').innerHTML = parti.join('');
+    if (res.pdfUrl) { $('linkPdfFatto').href = res.pdfUrl; $('linkPdfFatto').classList.remove('nascosto'); }
+    mostra('vistaFatto');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

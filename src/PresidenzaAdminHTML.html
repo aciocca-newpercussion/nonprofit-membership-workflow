@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Presidenza — {{NOME_GRUPPO}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blu:{{COLORE_BLU}}; --arancio:{{COLORE_ARANCIO}}; --beige:{{COLORE_BEIGE}};
+  --dark:#1a1f4e; --grey:#5D5F5F; --light:#f8f7f4;
+  --ok-bg:#E3F9E5; --ok-fg:#1A7F2E;
+  --err-bg:#FFEBEE; --err-fg:#C62828;
+  --warn-bg:#FFF4E0; --warn-fg:#B06500;
+  --line:rgba(44,51,133,0.10);
+  --shadow-sm:0 1px 3px rgba(26,31,78,0.08);
+  --shadow-md:0 8px 28px rgba(26,31,78,0.14);
+  --sheet-ease:cubic-bezier(.32,.72,0,1);
+  --surface:#FFFFFF;
+  --ink:#1D1D1F;
+  --ink-soft:#6E6E76;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
+  background:var(--beige);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overscroll-behavior-y:none;
+}
+button{font-family:inherit;}
+::selection{background:rgba(242,145,4,0.25);}
+
+/* ── Topbar ─────────────────────────────────────────────────────────────── */
+.topbar{
+  position:sticky; top:0; z-index:20;
+  display:flex; align-items:center; gap:12px;
+  padding:14px 20px;
+  background:linear-gradient(135deg, rgba(44,51,133,0.94), rgba(26,31,78,0.96));
+  backdrop-filter:blur(20px) saturate(160%);
+  -webkit-backdrop-filter:blur(20px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.topbar img{width:34px;height:34px;border-radius:9px;display:block;}
+.topbar-titles{flex:1;min-width:0;}
+.topbar-title{color:#fff;font-size:14.5px;font-weight:700;letter-spacing:-0.2px;line-height:1.2;}
+.topbar-sub{color:var(--arancio);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;margin-top:2px;}
+.topbar-user{
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:rgba(255,255,255,0.75);
+  white-space:nowrap;
+}
+.topbar-user a{color:rgba(255,255,255,0.75);text-decoration:none;}
+.topbar-user a:hover{color:#fff;}
+.topbar-avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--arancio);color:#fff;font-size:11px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────────── */
+.page{max-width:1080px;margin:0 auto;padding:20px 16px 100px;}
+.toolbar{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin-bottom:16px;
+}
+.search{
+  flex:1 1 220px; position:relative; min-width:180px;
+}
+.search input{
+  width:100%; padding:10px 14px 10px 38px; border-radius:12px;
+  border:1px solid var(--line); background:var(--surface);
+  font-size:14px; color:var(--ink); outline:none;
+  transition:box-shadow .15s ease, border-color .15s ease;
+}
+.search input:focus{border-color:var(--blu); box-shadow:0 0 0 3px rgba(44,51,133,0.12);}
+.search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); opacity:.45;}
+
+.chips{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; -ms-overflow-style:none; scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  flex:0 0 auto; display:flex; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:999px; border:1px solid var(--line);
+  background:var(--surface); color:var(--ink-soft); font-size:12.5px; font-weight:600;
+  cursor:pointer; user-select:none; white-space:nowrap;
+  transition:transform .12s ease, background .15s ease, color .15s ease, border-color .15s ease;
+}
+.chip:active{transform:scale(0.96);}
+.chip .n{
+  background:rgba(0,0,0,0.06); border-radius:999px; padding:1px 7px; font-size:11px;
+}
+.chip.active{background:var(--blu); border-color:var(--blu); color:#fff;}
+.chip.active .n{background:rgba(255,255,255,0.22); color:#fff;}
+
+/* ── Cards grid ─────────────────────────────────────────────────────────── */
+.grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr));
+  gap:12px;
+}
+.rcard{
+  background:var(--surface); border-radius:16px; padding:16px 16px 14px;
+  border:1px solid var(--line); box-shadow:var(--shadow-sm);
+  cursor:pointer; text-align:left;
+  transition:transform .15s var(--sheet-ease), box-shadow .15s ease;
+  animation:rcardIn .4s cubic-bezier(.22,1,.36,1) backwards;
+  animation-delay:calc(var(--i, 0) * 30ms);
+}
+.rcard:active{transform:scale(0.98);}
+@media (hover:hover){ .rcard:hover{box-shadow:var(--shadow-md); transform:translateY(-1px);} }
+@keyframes rcardIn{
+  from{ opacity:0; transform:translateY(10px) scale(.97); }
+  to  { opacity:1; transform:translateY(0) scale(1); }
+}
+.rcard-top{display:flex; align-items:flex-start; gap:12px;}
+.avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:#fff;
+}
+.avatar.soc{background:var(--blu);}
+.avatar.vol{background:var(--arancio);}
+.rcard-id{flex:1;min-width:0;}
+.rcard-name{font-size:15px;font-weight:700;letter-spacing:-0.2px;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rcard-meta{font-size:12px;color:var(--ink-soft);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rcard-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px;gap:8px;}
+.rcard-code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:var(--ink-soft);
+  background:rgba(0,0,0,0.04);padding:2px 7px;border-radius:6px;}
+
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:0.1px;white-space:nowrap;}
+.pill-blue{background:rgba(44,51,133,0.10);color:var(--blu);}
+.pill-orange{background:rgba(242,145,4,0.14);color:#B06500;}
+.pill-green{background:var(--ok-bg);color:var(--ok-fg);}
+.pill-red{background:var(--err-bg);color:var(--err-fg);}
+.pill-grey{background:rgba(0,0,0,0.06);color:var(--ink-soft);}
+
+.empty{
+  text-align:center; padding:70px 20px; color:var(--ink-soft);
+}
+.empty svg{opacity:.35;margin-bottom:14px;}
+.empty p{font-size:14px;margin:0;}
+
+.skel{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.skel-card{height:104px;border-radius:16px;background:linear-gradient(90deg,#fff 0%,#f2f0eb 50%,#fff 100%);
+  background-size:200% 100%;animation:shimmer 1.4s ease-in-out infinite;border:1px solid var(--line);}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+/* ── Overlay + Sheet/Modal ──────────────────────────────────────────────── */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(20,22,50,0.38);
+  backdrop-filter:blur(2px);
+  opacity:0; pointer-events:none;
+  transition:opacity .22s ease;
+}
+.overlay.show{opacity:1; pointer-events:auto;}
+
+.sheet{
+  position:fixed; z-index:51;
+  left:0; right:0; bottom:0;
+  max-height:92vh;
+  background:var(--beige);
+  border-radius:22px 22px 0 0;
+  box-shadow:0 -12px 40px rgba(20,22,50,0.25);
+  display:flex; flex-direction:column;
+  transform:translateY(100%);
+  transition:transform .32s var(--sheet-ease);
+}
+.sheet.show{transform:translateY(0);}
+.sheet-grabber{width:36px;height:4px;border-radius:99px;background:rgba(0,0,0,0.15);margin:10px auto 4px;flex-shrink:0;}
+@media (min-width:760px){
+  .overlay{display:flex;align-items:center;justify-content:center;}
+  .sheet{
+    position:static; width:560px; max-width:calc(100vw - 48px); max-height:85vh;
+    border-radius:22px; transform:translateY(12px) scale(0.97); opacity:0;
+    transition:transform .26s var(--sheet-ease), opacity .2s ease;
+  }
+  .sheet.show{transform:translateY(0) scale(1); opacity:1;}
+  .sheet-grabber{display:none;}
+}
+
+.sheet-head{
+  display:flex; align-items:flex-start; gap:14px; padding:6px 20px 16px;
+  flex-shrink:0; border-bottom:1px solid var(--line);
+}
+.sheet-avatar{width:52px;height:52px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff;}
+.sheet-close{
+  margin-left:auto; width:30px;height:30px;border-radius:50%;border:none;
+  background:rgba(0,0,0,0.06); display:flex;align-items:center;justify-content:center;cursor:pointer;
+  transition:transform .12s ease, background .15s ease; flex-shrink:0;
+}
+.sheet-close:active{transform:scale(0.9); background:rgba(0,0,0,0.1);}
+.sheet-name{font-size:19px;font-weight:800;letter-spacing:-0.3px;color:var(--ink);}
+.sheet-idp{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--ink-soft);margin-top:3px;}
+.sheet-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+
+.sheet-body{overflow-y:auto; padding:16px 20px 8px; flex:1;}
+.dcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px;}
+.dcard-title{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--blu);margin-bottom:10px;}
+.drow{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px solid rgba(0,0,0,0.045);font-size:13px;}
+.drow:last-child{border-bottom:none;}
+.drow .k{color:var(--ink-soft);flex-shrink:0;}
+.drow .v{font-weight:600;color:var(--ink);text-align:right;word-break:break-word;}
+.drow .v a{color:var(--blu);font-weight:600;}
+.dnote{font-size:13px;line-height:1.55;color:var(--ink);}
+
+.sheet-actions{
+  flex-shrink:0; padding:14px 20px calc(16px + env(safe-area-inset-bottom));
+  background:var(--beige); border-top:1px solid var(--line);
+  display:flex; flex-direction:column; gap:8px;
+}
+.actions-row{display:flex;gap:8px;}
+.btn{
+  flex:1; padding:13px 16px; border-radius:13px; border:none; font-size:14px; font-weight:700;
+  cursor:pointer; letter-spacing:-0.1px; transition:transform .1s ease, opacity .15s ease, background .15s ease;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.btn:active{transform:scale(0.97);}
+.btn:disabled{opacity:.55;cursor:default;transform:none;}
+.btn-primary{background:var(--blu);color:#fff;}
+.btn-secondary{background:rgba(44,51,133,0.08);color:var(--blu);}
+.btn-danger{background:#C00000;color:#fff;}
+.btn-danger-outline{background:rgba(192,0,0,0.08);color:#C00000;}
+.btn-ghost{background:transparent;color:var(--ink-soft);}
+.btn-sm{padding:9px 12px;font-size:12.5px;border-radius:10px;flex:none;}
+
+.action-form{display:none;flex-direction:column;gap:10px;}
+.action-form.show{display:flex;}
+.action-form label{font-size:11.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.4px;}
+.action-form select, .action-form textarea, .action-form input[type=text]{
+  width:100%; border:1px solid var(--line); border-radius:12px; padding:11px 13px;
+  font-size:14px; font-family:inherit; color:var(--ink); background:var(--surface); outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease; resize:vertical;
+}
+.action-form select:focus, .action-form textarea:focus, .action-form input:focus{
+  border-color:var(--blu); box-shadow:0 0 0 3px rgba(44,51,133,0.12);
+}
+.action-form .warn{
+  font-size:12px; color:var(--warn-fg); background:var(--warn-bg); border-radius:10px;
+  padding:9px 11px; line-height:1.5;
+}
+.field-group{display:flex;flex-direction:column;gap:5px;}
+
+.spinner{
+  width:15px;height:15px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.4); border-top-color:#fff;
+  animation:spin .7s linear infinite;
+}
+.btn-secondary .spinner, .btn-danger-outline .spinner{border-color:rgba(44,51,133,0.25);border-top-color:var(--blu);}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Card modificabili (nota, anagrafica) + cronologia ──────────────────── */
+.dcard-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;}
+.dcard-head .dcard-title{margin-bottom:0;flex:1;}
+.btn-link{
+  border:none;background:none;padding:0;cursor:pointer;
+  font-size:12px;font-weight:700;color:var(--blu);letter-spacing:-0.1px;
+  transition:opacity .15s ease;
+}
+.btn-link:hover{opacity:.7;}
+.btn-link:active{opacity:.5;}
+.btn-link:disabled{opacity:.4;cursor:default;}
+
+.dform{display:flex;flex-direction:column;gap:10px;}
+.dform label{font-size:11.5px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:0.4px;}
+.dform input[type=text], .dform input[type=date], .dform select, .dform textarea{
+  width:100%; border:1px solid var(--line); border-radius:12px; padding:11px 13px;
+  font-size:14px; font-family:inherit; color:var(--ink); background:var(--surface); outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease; resize:vertical;
+}
+.dform input:focus, .dform select:focus, .dform textarea:focus{
+  border-color:var(--blu); box-shadow:0 0 0 3px rgba(44,51,133,0.12);
+}
+.dform .warn{
+  font-size:12px; color:var(--warn-fg); background:var(--warn-bg); border-radius:10px;
+  padding:9px 11px; line-height:1.5;
+}
+.dform-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:2px;}
+
+/* Liberatoria: una riga per canale, tutta cliccabile (bersaglio comodo anche
+   da telefono, dove il pannello si usa più spesso). */
+.lib-check{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid var(--line);
+  border-radius:12px;background:var(--surface);cursor:pointer;}
+.lib-check input{width:18px;height:18px;accent-color:var(--blu);flex:0 0 auto;margin:0;cursor:pointer;}
+.lib-check span{font-size:13.5px;color:var(--ink);line-height:1.4;}
+
+.dmeta{font-size:11.5px;color:var(--ink-soft);margin-top:8px;}
+.dnote-empty{color:var(--ink-soft);font-size:12.5px;line-height:1.5;}
+
+.hist{display:flex;flex-direction:column;gap:2px;}
+.hitem{padding:9px 0;border-bottom:1px solid rgba(0,0,0,0.045);}
+.hitem:last-child{border-bottom:none;}
+.hitem-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline;}
+.hitem-col{font-size:12.5px;font-weight:700;color:var(--ink);}
+.hitem-when{font-size:11px;color:var(--ink-soft);white-space:nowrap;flex-shrink:0;}
+.hitem-vals{display:flex;align-items:center;gap:7px;margin-top:5px;flex-wrap:wrap;}
+.hval{
+  font-size:12px;padding:2px 8px;border-radius:7px;
+  max-width:100%;word-break:break-word;
+}
+.hval-old{background:rgba(0,0,0,0.05);color:var(--ink-soft);text-decoration:line-through;}
+.hval-new{background:var(--ok-bg);color:var(--ok-fg);font-weight:600;}
+.hval-arrow{color:var(--ink-soft);font-size:12px;flex-shrink:0;}
+
+/* ── Toast ──────────────────────────────────────────────────────────────── */
+.toast-wrap{position:fixed; top:14px; left:0; right:0; z-index:100; display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none; padding:0 14px;}
+.toast{
+  max-width:420px; width:100%;
+  background:rgba(29,29,31,0.92); backdrop-filter:blur(14px); color:#fff;
+  padding:12px 16px; border-radius:13px; font-size:13.5px; line-height:1.4;
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  display:flex; align-items:center; gap:10px;
+  transform:translateY(-16px); opacity:0;
+  transition:transform .28s var(--sheet-ease), opacity .22s ease;
+}
+.toast.show{transform:translateY(0); opacity:1;}
+.toast.err{background:rgba(139,0,0,0.94);}
+.toast .dot{width:8px;height:8px;border-radius:50%;background:var(--ok-fg);flex-shrink:0;}
+.toast.err .dot{background:#FF8A80;}
+
+@media (prefers-reduced-motion: reduce){
+  .sheet, .overlay, .toast, .rcard, .chip, .btn{transition:opacity .15s linear !important; transform:none !important;}
+  .rcard, .skel-card{animation:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="<?= logoUrl ?>" alt="Logo {{NOME_GRUPPO}}">
+  <div class="topbar-titles">
+    <div class="topbar-title">Pannello Presidenza</div>
+    <div class="topbar-sub">{{NOME_GRUPPO}}</div>
+  </div>
+  <div class="topbar-user">
+    <a id="linkFoglio" href="#" target="_blank" rel="noopener">Apri foglio ↗</a>
+    <div class="topbar-avatar" id="userAvatar">?</div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="toolbar">
+    <div class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="{{COLORE_BLU}}" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Cerca per nome, cognome, CF, ID pratica, email…" autocomplete="off">
+    </div>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div style="height:16px"></div>
+  <div id="listArea">
+    <div class="skel">
+      <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+      <div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet" id="sheet">
+    <div class="sheet-grabber"></div>
+    <div class="sheet-head" id="sheetHead"></div>
+    <div class="sheet-body" id="sheetBody"></div>
+    <div class="sheet-actions" id="sheetActions"></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ── Stato ────────────────────────────────────────────────────────────────
+var ALL_ROWS = [];
+var GRUPPI = [];
+var CURRENT_FILTER = 'tutte';
+var CURRENT_SEARCH = '';
+var SELECTED = null;      // idPratica attualmente aperta nel sheet
+var PENDING_FORM = null;  // 'ammetti' | 'rifiuta' | 'ratifica' | 'proponi' | 'espelli' | 'ritira' | 'cessazione' | null
+var BUSY = false;
+
+// Modifiche in linea nel corpo della scheda (non nel footer, che resta
+// riservato alle decisioni Ammetti/Rifiuta/Espelli).
+var EDIT_NOTA = false;
+var EDIT_ANAGRAFICA = false;
+var EDIT_LIBERATORIA = false;
+var CRONOLOGIA_APERTA = false;
+// idPratica -> {voci, troncato}. Caricata su richiesta e riusata finche' la
+// scheda resta aperta; azzerata dopo ogni azione che scrive nello Storico.
+var CRONOLOGIA_CACHE = {};
+
+// Deep-link da una notifica Chat (?pagina=presidenza&idPratica=...) — vedi
+// doGetPresidenzaAdmin in 17_PresidenzaAdmin.gs. JSON.stringify (non <?= ?>)
+// perché il valore arriva da un parametro URL non fidato.
+var IDPRATICA_DEEPLINK = <?!= JSON.stringify(idPraticaDeepLink) ?>;
+
+var FILTRI = [
+  { key:'tutte',     label:'Tutte' },
+  { key:'in_corso',  label:'In corso' },
+  { key:'attesa',    label:'In attesa' },
+  { key:'membri',    label:'Membri' },
+  { key:'rifiutati', label:'Rifiutati' },
+  { key:'cessati',   label:'Cessati' },
+];
+
+function esc(s){
+  return String(s === null || s === undefined ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function initiali(nome, cognome){
+  var a = (nome||'').trim().charAt(0), b=(cognome||'').trim().charAt(0);
+  return ((a+b) || '?').toUpperCase();
+}
+
+// ── Bootstrap ────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  document.getElementById('userAvatar').textContent = '<?= userInitial ?>';
+  renderChips();
+  if (IDPRATICA_DEEPLINK) {
+    SELECTED = IDPRATICA_DEEPLINK;
+    caricaDati({ mantieniSelezione: true });
+  } else {
+    caricaDati();
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function(e){
+    CURRENT_SEARCH = e.target.value.toLowerCase().trim();
+    renderLista();
+  });
+  document.getElementById('overlay').addEventListener('click', function(e){
+    if (e.target.id === 'overlay') chiudiSheet();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') chiudiSheet();
+  });
+});
+
+function caricaDati(opts){
+  opts = opts || {};
+  google.script.run
+    .withSuccessHandler(function(res){
+      ALL_ROWS = res.righe || [];
+      GRUPPI = res.gruppi || [];
+      document.getElementById('linkFoglio').href = res.linkFoglio || '#';
+      renderChips();
+      renderLista();
+      if (opts.mantieniSelezione && SELECTED){
+        var r = trovaRiga(SELECTED);
+        // Il corpo viene ricostruito da zero: senza questo, dopo il salvataggio
+        // di una nota la scheda tornerebbe in cima.
+        var bodyEl = document.getElementById('sheetBody');
+        var scrollPrec = bodyEl ? bodyEl.scrollTop : 0;
+        if (r) apriSheet(r, {silenzioso:true, scrollTop:scrollPrec});
+        else chiudiSheet();
+      }
+      if (opts.onDone) opts.onDone();
+    })
+    .withFailureHandler(function(err){
+      mostraErroreCaricamento(err);
+      if (opts.onDone) opts.onDone();
+    })
+    .presidenzaListaRichieste();
+}
+
+function mostraErroreCaricamento(err){
+  document.getElementById('listArea').innerHTML =
+    '<div class="empty"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#C00000" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+    '<p><strong>Impossibile caricare i dati.</strong><br>' + esc(err && err.message || err) + '</p></div>';
+}
+
+// ── Filtri / conteggi ────────────────────────────────────────────────────
+function bucketDi(r){
+  // "Cessati" raccoglie tutte le cause dell'Art. 9.1, non la sola espulsione:
+  // un receduto e un decaduto non sono più Membri, e mostrarli fra i Membri
+  // sarebbe la stessa confusione che il foglio faceva prima.
+  if (r.cessato || r.espulso) return 'cessati';
+  if (r.membroUfficiale) return 'membri';
+  if (r.stato === 'Rifiutato') return 'rifiutati';
+  if (r.stato === 'Ammesso') return 'attesa';
+  return 'in_corso';
+}
+function conteggi(){
+  var c = { tutte: ALL_ROWS.length, in_corso:0, attesa:0, membri:0, rifiutati:0, cessati:0 };
+  ALL_ROWS.forEach(function(r){ c[bucketDi(r)]++; });
+  return c;
+}
+function renderChips(){
+  var c = conteggi();
+  var html = FILTRI.map(function(f){
+    return '<div class="chip'+(CURRENT_FILTER===f.key?' active':'')+'" data-key="'+f.key+'">'+
+      f.label + '<span class="n">'+ (c[f.key]||0) +'</span></div>';
+  }).join('');
+  var el = document.getElementById('chips');
+  el.innerHTML = html;
+  Array.prototype.forEach.call(el.querySelectorAll('.chip'), function(chip){
+    chip.addEventListener('click', function(){
+      CURRENT_FILTER = chip.getAttribute('data-key');
+      renderChips();
+      renderLista();
+    });
+  });
+}
+
+function trovaRiga(idPratica){
+  for (var i=0;i<ALL_ROWS.length;i++) if (ALL_ROWS[i].idPratica === idPratica) return ALL_ROWS[i];
+  return null;
+}
+
+function corrispondeRicerca(r, q){
+  if (!q) return true;
+  var hay = [r.nome, r.cognome, r.cf, r.idPratica, r.email, r.emailIstituzionale].join(' ').toLowerCase();
+  return hay.indexOf(q) !== -1;
+}
+
+// ── Lista ────────────────────────────────────────────────────────────────
+function renderLista(){
+  var rows = ALL_ROWS.filter(function(r){
+    return (CURRENT_FILTER==='tutte' || bucketDi(r)===CURRENT_FILTER) && corrispondeRicerca(r, CURRENT_SEARCH);
+  });
+
+  var area = document.getElementById('listArea');
+  if (!rows.length){
+    area.innerHTML = '<div class="empty">'+
+      '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="'+(getComputedStyle(document.documentElement).getPropertyValue('--blu')||'{{COLORE_BLU}}')+'" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'+
+      '<p>Nessuna richiesta trovata per questo filtro.</p></div>';
+    return;
+  }
+
+  area.innerHTML = '<div class="grid">' + rows.map(function(r, i){ return cardHtml(r, i); }).join('') + '</div>';
+  Array.prototype.forEach.call(area.querySelectorAll('.rcard'), function(card){
+    card.addEventListener('click', function(){
+      var r = trovaRiga(card.getAttribute('data-idp'));
+      if (r) apriSheet(r);
+    });
+  });
+}
+
+function statoPillHtml(r){
+  // La pill porta lo stato, non la causa per esteso: 'Perdita della capacità di
+  // agire' non ci sta, e la causa completa è due centimetri più in basso nella
+  // scheda. Le righe espulse prima che esistesse la colonna BS restano quelle
+  // che sono: si mostra 'Espulso' perché è quello che dice il flag AQ.
+  if (r.cessato) return '<span class="pill pill-red">'+esc(r.stato || 'Cessato')+'</span>';
+  if (r.espulso) return '<span class="pill pill-red">Espulso</span>';
+  // Una proposta di espulsione aperta non toglie nulla: il socio è ancora
+  // Membro a pieno titolo finché non delibera l'Assemblea (Art. 9.3). La pill
+  // lo segnala perché è una posizione da seguire, non perché sia già decisa.
+  if (r.espulsioneProposta) return '<span class="pill pill-orange">Espulsione proposta</span>';
+  if (r.membroUfficiale) return '<span class="pill pill-green">Membro ufficiale</span>';
+  if (r.stato === 'Rifiutato') return '<span class="pill pill-red">Rifiutato</span>';
+  if (r.stato === 'Ammesso') return '<span class="pill pill-orange">Ammesso — in attesa</span>';
+  return '<span class="pill pill-blue">In corso</span>';
+}
+
+function cardHtml(r, i){
+  var avCls = r.tipo === 'Volontario' ? 'vol' : 'soc';
+  var delayIdx = Math.min(i || 0, 14); // oltre 14 card lo stagger non è più percepibile: parte tutto insieme
+  return '<button type="button" class="rcard" style="--i:'+delayIdx+'" data-idp="'+esc(r.idPratica)+'">'+
+    '<div class="rcard-top">'+
+      '<div class="avatar '+avCls+'">'+esc(initiali(r.nome,r.cognome))+'</div>'+
+      '<div class="rcard-id">'+
+        '<div class="rcard-name">'+esc(r.nome)+' '+esc(r.cognome)+'</div>'+
+        '<div class="rcard-meta">'+esc(r.tipo)+(r.gruppo ? ' · '+esc(r.gruppo) : '')+'</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="rcard-bottom">'+
+      '<span class="rcard-code">'+esc(r.idPratica||'—')+'</span>'+
+      statoPillHtml(r)+
+    '</div>'+
+  '</button>';
+}
+
+// ── Sheet dettaglio ──────────────────────────────────────────────────────
+function apriSheet(r, opts){
+  opts = opts || {};
+  var cambiaPratica = (SELECTED !== r.idPratica);
+  SELECTED = r.idPratica;
+  if (!opts.mantieniForm) PENDING_FORM = null;
+  // Aprendo una pratica diversa si riparte sempre pulito: nessuna modifica in
+  // sospeso ne' cronologia della scheda precedente.
+  if (cambiaPratica){ EDIT_NOTA = false; EDIT_ANAGRAFICA = false; EDIT_LIBERATORIA = false; CRONOLOGIA_APERTA = false; }
+
+  var avCls = r.tipo === 'Volontario' ? 'vol' : 'soc';
+  document.getElementById('sheetHead').innerHTML =
+    '<div class="sheet-avatar '+avCls+'" style="background:'+(avCls==='vol'?'var(--arancio)':'var(--blu)')+'">'+esc(initiali(r.nome,r.cognome))+'</div>'+
+    '<div style="min-width:0;flex:1;">'+
+      '<div class="sheet-name">'+esc(r.nome)+' '+esc(r.cognome)+'</div>'+
+      '<div class="sheet-idp">'+esc(r.idPratica||'—')+' · '+esc(r.tipo)+'</div>'+
+      '<div class="sheet-pills">'+statoPillHtml(r)+(r.gruppo?'<span class="pill pill-grey">'+esc(r.gruppo)+'</span>':'')+'</div>'+
+    '</div>'+
+    '<button type="button" class="sheet-close" onclick="chiudiSheet()">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1D1D1F" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'+
+    '</button>';
+
+  var corpo = document.getElementById('sheetBody');
+  corpo.innerHTML = corpoDettaglioHtml(r);
+  if (opts.scrollTop) corpo.scrollTop = opts.scrollTop;
+  renderAzioni(r);
+
+  document.getElementById('overlay').classList.add('show');
+  requestAnimationFrame(function(){ document.getElementById('sheet').classList.add('show'); });
+}
+
+function chiudiSheet(){
+  document.getElementById('sheet').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+  SELECTED = null; PENDING_FORM = null;
+  EDIT_NOTA = false; EDIT_ANAGRAFICA = false; EDIT_LIBERATORIA = false; CRONOLOGIA_APERTA = false;
+}
+
+function riga(k,v){
+  return '<div class="drow"><span class="k">'+k+'</span><span class="v">'+v+'</span></div>';
+}
+
+function corpoDettaglioHtml(r){
+  var h = '';
+
+  h += '<div class="dcard"><div class="dcard-title">Domanda</div>'+
+    riga('Tipo', esc(r.tipo)) +
+    riga('Inviata il', esc(r.dataSubmission||'N/D')) +
+    riga('Stato', statoPillHtml(r)) +
+    (r.dataAmmissione ? riga(r.stato==='Rifiutato'?'Rifiutata il':'Ammessa il', esc(r.dataAmmissione)) : '') +
+    (r.gruppo ? riga('Gruppo', esc(r.gruppo)) : '') +
+    (r.ruoloAssociativo ? riga('Ruolo associativo', esc(r.ruoloAssociativo)) : '') +
+  '</div>';
+
+  h += cardNotaHtml(r);
+
+  if (r.motivoRifiuto){
+    h += '<div class="dcard"><div class="dcard-title">Motivo del rifiuto</div><div class="dnote">'+esc(r.motivoRifiuto)+'</div></div>';
+  }
+  if (r.cessato || r.espulso){
+    var cess = '<div class="dcard" style="border-color:rgba(192,0,0,0.25);">'+
+      '<div class="dcard-title" style="color:#C00000;">Cessazione del rapporto associativo</div>';
+    cess += '<div class="dnote"><strong>Causa:</strong> '+esc(r.causaCessazioneLabel || 'Espulsione')+
+            (r.causaCessazioneArticolo ? ' — '+esc(r.causaCessazioneArticolo)+' dello Statuto' : '')+'</div>';
+    if (r.dataCessazione)      cess += '<div class="dnote"><strong>Efficacia:</strong> '+esc(r.dataCessazione)+'</div>';
+    if (r.riferimentoCessazione) cess += '<div class="dnote"><strong>'+
+      (r.causaCessazione === 'Espulsione' ? 'Delibera dell\'Assemblea' : 'Riferimento')+
+      ':</strong> '+esc(r.riferimentoCessazione)+'</div>';
+    if (r.espulsoPerche)       cess += '<div class="dnote"><strong>Motivo:</strong> '+esc(r.espulsoPerche)+'</div>';
+    h += cess + '</div>';
+  } else if (r.espulsioneProposta){
+    h += '<div class="dcard" style="border-color:rgba(176,101,0,0.3);">'+
+      '<div class="dcard-title" style="color:#B06500;">Proposta di espulsione — in attesa dell\'Assemblea</div>'+
+      '<div class="dnote"><strong>Proposta il:</strong> '+esc(r.espulsioneProposta)+'</div>'+
+      (r.espulsoPerche ? '<div class="dnote"><strong>Motivo proposto:</strong> '+esc(r.espulsoPerche)+'</div>' : '')+
+      '<div class="dnote">La posizione resta piena. L\'espulsione la delibera l\'Assemblea dei Soci su proposta '+
+      'della Presidenza, dopo aver ascoltato l\'interessato in contraddittorio (Art. 9.3 Statuto).</div></div>';
+  }
+  if (r.deliberaRif){
+    h += '<div class="dcard"><div class="dcard-title">Delibera / ratifica</div><div class="dnote">'+esc(r.deliberaRif)+'</div></div>';
+  }
+
+  h += cardContattiHtml(r);
+
+  if (r.tipo === 'Volontario'){
+    h += '<div class="dcard"><div class="dcard-title">Genitore / tutore collegato</div>';
+    if (r.genitore && r.genitore.trovato !== false){
+      h += riga('Nome', esc(r.genitore.nome)+' '+esc(r.genitore.cognome)) +
+           riga('Stato domanda', esc(r.genitore.statoDomanda||'N/D')) +
+           riga('Pagamento', esc(r.genitore.statoPagamento||'N/D')) +
+           riga('In regola', r.genitore.inRegola ? '<span class="pill pill-green">Sì</span>' : '<span class="pill pill-red">No</span>');
+    } else {
+      h += '<div class="dnote">Nessun Socio Ordinario corrispondente trovato (CF/ID Pratica genitore: '+esc(r.cfGenitore||'—')+' / '+esc(r.idPraticaGenitore||'—')+').</div>';
+    }
+    h += '</div>';
+  }
+
+  if (r.tipo === 'Socio Ordinario' || r.statoPagamento){
+    h += '<div class="dcard"><div class="dcard-title">Pagamento &amp; quota</div>'+
+      riga('Stato pagamento', esc(r.statoPagamento||'N/D')) +
+      (r.dataScadenzaQuota ? riga('Quota valida fino al', esc(r.dataScadenzaQuota)) : '') +
+      riga('Abbonamento Stripe', r.hasStripeSub ? '<span class="pill pill-blue">Attivo</span>' : '<span class="pill pill-grey">Nessuno</span>') +
+    '</div>';
+  }
+
+  if (r.membroUfficiale){
+    h += '<div class="dcard"><div class="dcard-title">Sistemi</div>'+
+      riga('Google Workspace', esc(r.workspaceEsito||'N/D')) +
+      riga('Microsoft 365', esc(r.m365Esito||'N/D')) +
+    '</div>';
+  }
+
+  h += '<div class="dcard"><div class="dcard-title">Documenti &amp; consensi</div>'+
+    riga('Documento identità', r.fileDocIdentita ? '<a href="'+esc(r.fileDocIdentita)+'" target="_blank" rel="noopener">Apri documento ↗</a>' : 'N/D') +
+    riga('Firma raccolta', r.firmaPresente ? '<span class="pill pill-green">Sì</span>' : '<span class="pill pill-grey">No</span>') +
+    riga('Statuto / Privacy / Politiche', (r.consensi.statuto&&r.consensi.privacy&&r.consensi.politiche) ? '<span class="pill pill-green">Accettati</span>' : '<span class="pill pill-red">Incompleti</span>') +
+  '</div>';
+
+  h += cardLiberatoriaHtml(r);
+
+  if (r.noteAbilita){
+    h += '<div class="dcard"><div class="dcard-title">Note abilità musicali</div><div class="dnote">'+esc(r.noteAbilita)+'</div></div>';
+  }
+
+  h += cardCronologiaHtml(r);
+
+  return h;
+}
+
+// Ricostruisce solo il corpo della scheda, conservando lo scroll. Usato dalle
+// modifiche in linea, che non hanno bisogno di rileggere i dati dal server.
+function rerenderCorpo(){
+  var r = trovaRiga(SELECTED);
+  if (!r) return;
+  var body = document.getElementById('sheetBody');
+  var y = body.scrollTop;
+  body.innerHTML = corpoDettaglioHtml(r);
+  body.scrollTop = y;
+}
+
+function valoreDi(id){
+  var el = document.getElementById(id);
+  return el ? String(el.value || '').trim() : '';
+}
+
+// 'dd/MM/yyyy' (come arriva dal server) -> 'yyyy-MM-dd' per <input type=date>.
+// presidenzaAggiornaAnagrafica riconosce e ricostruisce proprio questo formato.
+function dataInputDaIT(s){
+  var m = String(s || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
+}
+
+// ── Nota interna della Presidenza ────────────────────────────────────────
+function cardNotaHtml(r){
+  var n = r.notaPresidenza;
+  var head = '<div class="dcard-head"><div class="dcard-title">Nota interna della Presidenza</div>'+
+    (EDIT_NOTA ? '' : '<button type="button" class="btn-link" onclick="apriEditNota()">'+(n?'Modifica':'Aggiungi')+'</button>')+
+  '</div>';
+
+  if (!EDIT_NOTA){
+    var corpo = n
+      ? '<div class="dnote">'+esc(n.testo).replace(/\n/g,'<br>')+'</div>'+
+        '<div class="dmeta">'+esc(n.autore||'')+(n.data ? ' · '+esc(n.data) : '')+'</div>'
+      : '<div class="dnote dnote-empty">Nessuna nota. Visibile solo alla Presidenza: non compare in nessuna email né nella tessera.</div>';
+    return '<div class="dcard">'+head+corpo+'</div>';
+  }
+
+  return '<div class="dcard">'+head+
+    '<div class="dform">'+
+      '<textarea id="inpNota" rows="4" placeholder="Annotazione visibile solo alla Presidenza. Svuota il campo e salva per eliminarla.">'+esc(n?n.testo:'')+'</textarea>'+
+      '<div class="dform-actions">'+
+        '<button type="button" class="btn btn-ghost btn-sm" onclick="annullaEditNota()">Annulla</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id="btnSalvaNota" onclick="salvaNota(\''+esc(r.idPratica)+'\')">Salva nota</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function apriEditNota(){
+  EDIT_NOTA = true;
+  rerenderCorpo();
+  var t = document.getElementById('inpNota');
+  if (t){ t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+}
+function annullaEditNota(){
+  EDIT_NOTA = false;
+  rerenderCorpo();
+}
+
+function salvaNota(idPratica){
+  if (BUSY) return;
+  var testo = document.getElementById('inpNota').value;
+  BUSY = true;
+  setBusy('btnSalvaNota', true, 'Salvataggio…');
+  google.script.run
+    .withSuccessHandler(function(res){
+      BUSY = false;
+      EDIT_NOTA = false;
+      CRONOLOGIA_CACHE = {};
+      mostraToast(res && res.testo ? 'Nota salvata.' : 'Nota eliminata.');
+      caricaDati({ mantieniSelezione:true });
+    })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnSalvaNota', 'Salva nota'); })
+    .presidenzaSalvaNota(idPratica, testo);
+}
+
+// ── Contatti (in sola lettura o in modifica) ─────────────────────────────
+function cardContattiHtml(r){
+  var head = '<div class="dcard-head"><div class="dcard-title">Contatti</div>'+
+    (EDIT_ANAGRAFICA ? '' : '<button type="button" class="btn-link" onclick="apriEditAnagrafica()">Modifica</button>')+
+  '</div>';
+
+  if (!EDIT_ANAGRAFICA){
+    return '<div class="dcard">'+head+
+      riga('Nome e cognome', esc(r.nome)+' '+esc(r.cognome)) +
+      riga('Codice fiscale', '<code>'+esc(r.cf||'N/D')+'</code>') +
+      riga('Data di nascita', esc(r.dataNascita||'N/D')) +
+      (r.sesso ? riga('Sesso', esc(r.sesso)) : '') +
+      riga('Email', esc(r.email||'N/D')) +
+      riga('Telefono', esc(r.telefono||'N/D')) +
+      (r.emailIstituzionale ? riga('Email istituzionale', '<code>'+esc(r.emailIstituzionale)+'</code>') : '') +
+    '</div>';
+  }
+
+  // Avviso solo a chi ha gia' un account: correggere qui non rinomina nulla di
+  // gia' creato (vedi presidenzaAggiornaAnagrafica in 17_PresidenzaAdmin.gs).
+  var avviso = r.membroUfficiale
+    ? '<div class="warn">Questa persona ha già un account attivo: la correzione <strong>non rinomina</strong> l\'email istituzionale né gli account Google Workspace e Microsoft 365 già creati.</div>'
+    : '';
+
+  var opzioniSesso = ['', 'M', 'F'].map(function(v){
+    return '<option value="'+v+'"'+(String(r.sesso||'').toUpperCase()===v ? ' selected' : '')+'>'+(v || '—')+'</option>';
+  }).join('');
+
+  return '<div class="dcard">'+head+
+    '<div class="dform">'+
+      avviso +
+      campoTesto('anagNome','Nome', r.nome) +
+      campoTesto('anagCognome','Cognome', r.cognome) +
+      campoTesto('anagCf','Codice fiscale', r.cf) +
+      '<div class="field-group"><label>Data di nascita</label>'+
+        '<input type="date" id="anagDataNascita" value="'+esc(dataInputDaIT(r.dataNascita))+'"></div>'+
+      '<div class="field-group"><label>Sesso</label><select id="anagSesso">'+opzioniSesso+'</select></div>'+
+      campoTesto('anagEmail','Email', r.email) +
+      campoTesto('anagTelefono','Telefono', r.telefono) +
+      '<div class="dform-actions">'+
+        '<button type="button" class="btn btn-ghost btn-sm" onclick="annullaEditAnagrafica()">Annulla</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id="btnSalvaAnagrafica" onclick="salvaAnagrafica(\''+esc(r.idPratica)+'\')">Salva modifiche</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+}
+
+function campoTesto(id, etichetta, valore){
+  return '<div class="field-group"><label>'+etichetta+'</label>'+
+    '<input type="text" id="'+id+'" value="'+esc(valore||'')+'"></div>';
+}
+
+function apriEditAnagrafica(){
+  EDIT_ANAGRAFICA = true;
+  rerenderCorpo();
+  var el = document.getElementById('anagNome');
+  if (el) el.focus();
+}
+function annullaEditAnagrafica(){
+  EDIT_ANAGRAFICA = false;
+  rerenderCorpo();
+}
+
+function salvaAnagrafica(idPratica){
+  if (BUSY) return;
+  var r = trovaRiga(idPratica);
+  if (!r) return;
+
+  // Si mandano SOLO i campi davvero cambiati: presidenzaAggiornaAnagrafica
+  // salta quelli assenti (`if (!(campo in campi)) return;`) invece di
+  // sovrascriverli con una stringa vuota.
+  var attuali = {
+    nome: r.nome, cognome: r.cognome, cf: r.cf,
+    dataNascita: dataInputDaIT(r.dataNascita),
+    sesso: String(r.sesso||'').toUpperCase(),
+    email: r.email, telefono: r.telefono
+  };
+  var nuovi = {
+    nome: valoreDi('anagNome'),
+    cognome: valoreDi('anagCognome'),
+    cf: valoreDi('anagCf').toUpperCase(),
+    dataNascita: valoreDi('anagDataNascita'),
+    sesso: valoreDi('anagSesso').toUpperCase(),
+    email: valoreDi('anagEmail'),
+    telefono: valoreDi('anagTelefono')
+  };
+
+  var campi = {};
+  var cambiati = 0;
+  Object.keys(nuovi).forEach(function(k){
+    if (String(nuovi[k]||'') !== String(attuali[k]||'')){ campi[k] = nuovi[k]; cambiati++; }
+  });
+
+  if (!cambiati){
+    EDIT_ANAGRAFICA = false;
+    rerenderCorpo();
+    mostraToast('Nessun campo modificato.');
+    return;
+  }
+
+  BUSY = true;
+  setBusy('btnSalvaAnagrafica', true, 'Salvataggio…');
+  google.script.run
+    .withSuccessHandler(function(res){
+      BUSY = false;
+      EDIT_ANAGRAFICA = false;
+      CRONOLOGIA_CACHE = {};
+      mostraToast((res && res.messaggio) || 'Anagrafica aggiornata.');
+      caricaDati({ mantieniSelezione:true });
+    })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnSalvaAnagrafica', 'Salva modifiche'); })
+    .presidenzaAggiornaAnagrafica(idPratica, campi);
+}
+
+// ── Liberatoria immagini e video (in sola lettura o in modifica) ─────────
+// Il modulo di iscrizione promette la revoca in qualsiasi momento: questa e'
+// la sola strada per registrarla senza toccare il foglio a mano.
+var CANALI_LIBERATORIA = [
+  { chiave:'sito',   etichetta:'Sito web' },
+  { chiave:'social', etichetta:'Social media' },
+  { chiave:'stampa', etichetta:'Materiale stampato' },
+  { chiave:'video',  etichetta:'Video promozionali' }
+];
+
+function cardLiberatoriaHtml(r){
+  var lib = r.liberatoria || {};
+  var head = '<div class="dcard-head"><div class="dcard-title">Liberatoria immagini e video</div>'+
+    (EDIT_LIBERATORIA ? '' : '<button type="button" class="btn-link" onclick="apriEditLiberatoria()">Modifica</button>')+
+  '</div>';
+
+  var meta = lib.aggiornataIl
+    ? '<div class="dmeta">Aggiornata il '+esc(lib.aggiornataIl)+(lib.aggiornataDa ? ' da '+esc(lib.aggiornataDa) : '')+'</div>'
+    : '';
+
+  if (!EDIT_LIBERATORIA){
+    return '<div class="dcard">'+head+
+      CANALI_LIBERATORIA.map(function(c){
+        return riga(c.etichetta, lib[c.chiave]
+          ? '<span class="pill pill-green">Autorizzato</span>'
+          : '<span class="pill pill-grey">Non autorizzato</span>');
+      }).join('') +
+      meta +
+    '</div>';
+  }
+
+  return '<div class="dcard">'+head+
+    '<div class="dform">'+
+      '<div class="warn">Il consenso è facoltativo e revocabile in qualsiasi momento. Togli la spunta a un canale per registrare la revoca: resta scritta nella cronologia della pratica, con data e autore.</div>'+
+      CANALI_LIBERATORIA.map(function(c){
+        return '<label class="lib-check" for="lib_'+c.chiave+'">'+
+          '<input type="checkbox" id="lib_'+c.chiave+'"'+(lib[c.chiave] ? ' checked' : '')+'>'+
+          '<span>'+c.etichetta+'</span>'+
+        '</label>';
+      }).join('') +
+      '<div class="dform-actions">'+
+        '<button type="button" class="btn btn-ghost btn-sm" onclick="annullaEditLiberatoria()">Annulla</button>'+
+        '<button type="button" class="btn btn-secondary btn-sm" id="btnSalvaLiberatoria" onclick="salvaLiberatoria(\''+esc(r.idPratica)+'\')">Salva liberatoria</button>'+
+      '</div>'+
+    '</div>'+
+    meta +
+  '</div>';
+}
+
+function apriEditLiberatoria(){
+  EDIT_LIBERATORIA = true;
+  rerenderCorpo();
+}
+function annullaEditLiberatoria(){
+  EDIT_LIBERATORIA = false;
+  rerenderCorpo();
+}
+
+function salvaLiberatoria(idPratica){
+  if (BUSY) return;
+  var r = trovaRiga(idPratica);
+  if (!r) return;
+  var lib = r.liberatoria || {};
+
+  // Come per l'anagrafica: si mandano SOLO i canali davvero cambiati, cosi'
+  // presidenzaAggiornaLiberatoria salta gli altri invece di riscriverli.
+  var canali = {};
+  var cambiati = 0;
+  CANALI_LIBERATORIA.forEach(function(c){
+    var el = document.getElementById('lib_'+c.chiave);
+    if (!el) return;
+    if (!!el.checked !== !!lib[c.chiave]){ canali[c.chiave] = !!el.checked; cambiati++; }
+  });
+
+  if (!cambiati){
+    EDIT_LIBERATORIA = false;
+    rerenderCorpo();
+    mostraToast('Nessun canale modificato.');
+    return;
+  }
+
+  BUSY = true;
+  setBusy('btnSalvaLiberatoria', true, 'Salvataggio…');
+  google.script.run
+    .withSuccessHandler(function(res){
+      BUSY = false;
+      EDIT_LIBERATORIA = false;
+      CRONOLOGIA_CACHE = {};
+      mostraToast((res && res.messaggio) || 'Liberatoria aggiornata.');
+      caricaDati({ mantieniSelezione:true });
+    })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnSalvaLiberatoria', 'Salva liberatoria'); })
+    .presidenzaAggiornaLiberatoria(idPratica, canali);
+}
+
+// ── Cronologia (foglio "Storico") ────────────────────────────────────────
+function cardCronologiaHtml(r){
+  var head = '<div class="dcard-head"><div class="dcard-title">Cronologia modifiche</div>'+
+    '<button type="button" class="btn-link" onclick="toggleCronologia(\''+esc(r.idPratica)+'\')">'+
+      (CRONOLOGIA_APERTA ? 'Nascondi' : 'Mostra')+'</button>'+
+  '</div>';
+
+  if (!CRONOLOGIA_APERTA){
+    return '<div class="dcard">'+head+
+      '<div class="dnote dnote-empty">Ogni modifica registrata nel foglio Storico per questa domanda.</div></div>';
+  }
+
+  var dati = CRONOLOGIA_CACHE[r.idPratica];
+  if (!dati){
+    return '<div class="dcard">'+head+'<div class="dnote dnote-empty">Caricamento…</div></div>';
+  }
+  if (!dati.voci.length){
+    return '<div class="dcard">'+head+'<div class="dnote dnote-empty">Nessuna modifica registrata per questa domanda.</div></div>';
+  }
+
+  var lista = dati.voci.map(function(v){
+    return '<div class="hitem">'+
+      '<div class="hitem-top">'+
+        '<span class="hitem-col">'+esc(v.colonna)+'</span>'+
+        '<span class="hitem-when">'+esc(v.quando)+'</span>'+
+      '</div>'+
+      '<div class="hitem-vals">'+
+        '<span class="hval hval-old">'+esc(v.vecchioValore || '—')+'</span>'+
+        '<span class="hval-arrow">→</span>'+
+        '<span class="hval hval-new">'+esc(v.nuovoValore || '—')+'</span>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+
+  return '<div class="dcard">'+head+'<div class="hist">'+lista+'</div>'+
+    (dati.troncato ? '<div class="dmeta">Mostrate le 200 modifiche più recenti.</div>' : '')+
+  '</div>';
+}
+
+function toggleCronologia(idPratica){
+  CRONOLOGIA_APERTA = !CRONOLOGIA_APERTA;
+  rerenderCorpo();
+  if (!CRONOLOGIA_APERTA || CRONOLOGIA_CACHE[idPratica]) return;
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      CRONOLOGIA_CACHE[idPratica] = {
+        voci: (res && res.voci) || [],
+        troncato: !!(res && res.troncato)
+      };
+      // L'utente potrebbe aver chiuso la sezione o cambiato pratica nel frattempo.
+      if (CRONOLOGIA_APERTA && SELECTED === idPratica) rerenderCorpo();
+    })
+    .withFailureHandler(function(err){
+      CRONOLOGIA_APERTA = false;
+      rerenderCorpo();
+      mostraToast((err && err.message) || String(err), true);
+    })
+    .presidenzaCronologia(idPratica);
+}
+
+// ── Azioni ───────────────────────────────────────────────────────────────
+//
+// Il footer ospita solo le *decisioni*, e ricalca il ciclo di vita dello
+// Statuto: ammissione e rigetto (Art. 8.3, decisione del delegato soggetta a
+// ratifica), poi le due fasi dell'espulsione (Art. 9.3: la Presidenza propone,
+// l'Assemblea delibera) e le altre cause di cessazione (Art. 9.1).
+// Nessun bottone qui espelle da solo: non è una scelta di prodotto, è
+// l'articolo 9.3.
+var FORM_IDS = ['formAmmetti','formRifiuta','formProponi','formEspelli','formRitira','formCessazione','formRatifica'];
+
+function renderAzioni(r){
+  var el = document.getElementById('sheetActions');
+  var cessato       = r.cessato || r.espulso;
+  var haProposta    = !!r.espulsioneProposta;
+  var puoAmmettere  = !r.membroUfficiale && !cessato;
+  var puoRifiutare  = !r.membroUfficiale && !cessato && r.stato !== 'Rifiutato';
+  var puoProporre   = r.membroUfficiale && !cessato && !haProposta;
+  var puoDeliberare = r.membroUfficiale && !cessato && haProposta;
+  var puoCessare    = r.membroUfficiale && !cessato;
+  var puoRatificare = !!r.deliberaRif && r.deliberaRif.indexOf('Ratificata') === -1;
+
+  var html = '';
+
+  html += '<div class="actions-row" id="rowPrincipale">';
+  if (puoAmmettere)  html += '<button type="button" class="btn btn-primary" onclick="apriForm(\'ammetti\')">'+iconCheck()+' '+(r.stato==='Rifiutato'?'Riammetti':'Ammetti')+'</button>';
+  if (puoRifiutare)  html += '<button type="button" class="btn btn-danger-outline" onclick="apriForm(\'rifiuta\')">Rifiuta</button>';
+  if (puoRatificare) html += '<button type="button" class="btn btn-ghost btn-sm" onclick="apriForm(\'ratifica\')">Registra ratifica</button>';
+  if (puoCessare)    html += '<button type="button" class="btn btn-danger-outline" onclick="apriForm(\'cessazione\')">Registra cessazione</button>';
+  if (puoProporre)   html += '<button type="button" class="btn btn-danger-outline" onclick="apriForm(\'proponi\')">Proponi espulsione</button>';
+  if (puoDeliberare) {
+    html += '<button type="button" class="btn btn-danger" onclick="apriForm(\'espelli\')">Registra delibera dell\'Assemblea</button>';
+    html += '<button type="button" class="btn btn-ghost btn-sm" onclick="apriForm(\'ritira\')">Ritira proposta</button>';
+  }
+  if (!puoAmmettere && !puoRifiutare && !puoCessare && !puoProporre && !puoDeliberare && !puoRatificare)
+    html += '<div style="flex:1;text-align:center;font-size:12.5px;color:var(--ink-soft);padding:6px 0;">Nessuna azione disponibile per questo stato.</div>';
+  html += '</div>';
+
+  // Form Ammetti
+  var opzioniGruppo = (r.tipo === 'Volontario')
+    ? ['Volontari']
+    : GRUPPI.filter(function(g){ return g !== 'Volontari'; });
+  html += '<div class="action-form'+(PENDING_FORM==='ammetti'?' show':'')+'" id="formAmmetti">'+
+    '<div class="field-group"><label>Gruppo</label><select id="inpGruppo">'+
+      opzioniGruppo.map(function(g){ return '<option value="'+esc(g)+'"'+(g===r.gruppo?' selected':'')+'>'+esc(g)+'</option>'; }).join('') +
+    '</select></div>'+
+    '<div class="field-group"><label>Ruolo associativo (opzionale)</label><input type="text" id="inpRuolo" placeholder="es. Presidente, Segretario…" value="'+esc(r.ruoloAssociativo||'')+'"></div>'+
+    '<div class="warn">La decisione presa da qui è quella del componente delegato dalla Presidenza (Art. 8.3): resta soggetta a ratifica dell\'organo entro 10 giorni, poi si consolida da sé.</div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-primary" id="btnConfermaAmmetti" onclick="confermaAmmetti(\''+esc(r.idPratica)+'\')">'+iconCheck()+' Conferma ammissione</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Rifiuta
+  html += '<div class="action-form'+(PENDING_FORM==='rifiuta'?' show':'')+'" id="formRifiuta">'+
+    '<div class="field-group"><label>Motivo del rifiuto</label><textarea id="inpMotivoRifiuto" rows="3" placeholder="Spiega il motivo — verrà incluso nell\'email al richiedente."></textarea></div>'+
+    '<div class="warn">Il rigetto va motivato (Art. 8.3) e l\'aspirante socio può chiederne il riesame all\'Assemblea (Art. 8.5): l\'email lo dice già.</div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-danger-outline" id="btnConfermaRifiuta" onclick="confermaRifiuta(\''+esc(r.idPratica)+'\')">Conferma rifiuto</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Ratifica (Art. 8.3)
+  html += '<div class="action-form'+(PENDING_FORM==='ratifica'?' show':'')+'" id="formRatifica">'+
+    '<div class="field-group"><label>Estremi della ratifica</label><input type="text" id="inpRatifica" placeholder="es. Presidenza del 12/10/2026, verbale n. 7"></div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-primary" id="btnConfermaRatifica" onclick="confermaRatifica(\''+esc(r.idPratica)+'\')">Registra ratifica</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Proponi espulsione (Art. 9.3, passo 1)
+  html += '<div class="action-form'+(PENDING_FORM==='proponi'?' show':'')+'" id="formProponi">'+
+    '<div class="warn">Questa azione <strong>non</strong> espelle e non tocca accessi, quota o posizione: registra la proposta della Presidenza e invita l\'interessato a esporre le sue ragioni. A deliberare è l\'Assemblea dei Soci (Art. 9.3 Statuto).</div>'+
+    '<div class="field-group"><label>Motivo della proposta</label><textarea id="inpMotivoProponi" rows="3" placeholder="Spiega il motivo — verrà incluso nell\'invito al contraddittorio."></textarea></div>'+
+    '<div class="field-group"><label><input type="checkbox" id="inpSenzaAvviso"> Contraddittorio già svolto — non inviare l\'invito</label></div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-danger-outline" id="btnConfermaProponi" onclick="confermaProponi(\''+esc(r.idPratica)+'\')">Registra proposta</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Espelli (Art. 9.3, passo 2 — esecuzione della delibera assembleare)
+  html += '<div class="action-form'+(PENDING_FORM==='espelli'?' show':'')+'" id="formEspelli">'+
+    '<div class="warn">Da usare <strong>solo dopo</strong> la delibera dell\'Assemblea. Revoca lo stato di Membro, sospende gli accessi Workspace/M365 e annulla l\'abbonamento. Nessun rimborso della quota versata (Art. 9.7).</div>'+
+    '<div class="field-group"><label>Estremi della delibera dell\'Assemblea</label><input type="text" id="inpDeliberaEspelli" placeholder="es. Assemblea del 12/10/2026, verbale n. 3"></div>'+
+    '<div class="field-group"><label>Motivazione (come deliberata)</label><textarea id="inpMotivoEspelli" rows="3" placeholder="Verrà inclusa nella comunicazione al membro.">'+esc(r.espulsoPerche||'')+'</textarea></div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-danger" id="btnConfermaEspelli" onclick="confermaEspelli(\''+esc(r.idPratica)+'\')">Esegui la delibera</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Ritira proposta
+  html += '<div class="action-form'+(PENDING_FORM==='ritira'?' show':'')+'" id="formRitira">'+
+    '<div class="field-group"><label>Esito</label><input type="text" id="inpEsitoRitira" placeholder="es. Assemblea del 12/10/2026: proposta respinta"></div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-primary" id="btnConfermaRitira" onclick="confermaRitira(\''+esc(r.idPratica)+'\')">Ritira la proposta</button>'+
+    '</div>'+
+  '</div>';
+
+  // Form Registra cessazione (Art. 9.1.a/b, 9.5)
+  html += '<div class="action-form'+(PENDING_FORM==='cessazione'?' show':'')+'" id="formCessazione">'+
+    '<div class="warn">Per le cause diverse dall\'espulsione. Revoca gli accessi e annulla l\'abbonamento; nessun rimborso della quota versata (Art. 9.7).</div>'+
+    '<div class="field-group"><label>Causa</label><select id="inpCausaCess">'+
+      '<option value="Decadenza">Decadenza — mancato pagamento della quota (Art. 9.1.b)</option>'+
+      '<option value="Recesso">Recesso del Socio (Art. 9.5)</option>'+
+      '<option value="Incapacita">Perdita della capacità di agire (Art. 9.1.a)</option>'+
+      '<option value="Decesso">Decesso (Art. 9.1.e)</option>'+
+    '</select></div>'+
+    '<div class="field-group"><label>Data di efficacia</label><input type="date" id="inpDataCess"></div>'+
+    '<div class="field-group"><label>Nota (opzionale)</label><textarea id="inpDettaglioCess" rows="2" placeholder="es. recesso comunicato via PEC il 03/10/2026"></textarea></div>'+
+    '<div class="actions-row">'+
+      '<button type="button" class="btn btn-ghost btn-sm" onclick="chiudiForm()">Annulla</button>'+
+      '<button type="button" class="btn btn-danger-outline" id="btnConfermaCessazione" onclick="confermaCessazione(\''+esc(r.idPratica)+'\')">Registra cessazione</button>'+
+    '</div>'+
+  '</div>';
+
+  el.innerHTML = html;
+
+  var oggi = document.getElementById('inpDataCess');
+  if (oggi && !oggi.value) oggi.value = new Date().toISOString().slice(0,10);
+}
+
+function iconCheck(){
+  return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+}
+
+function apriForm(nome){
+  PENDING_FORM = nome;
+  document.getElementById('rowPrincipale').style.display = 'none';
+  var atteso = 'form'+nome.charAt(0).toUpperCase()+nome.slice(1);
+  FORM_IDS.forEach(function(id){
+    var f = document.getElementById(id); if (f) f.classList.toggle('show', id === atteso);
+  });
+}
+function chiudiForm(){
+  PENDING_FORM = null;
+  var rp = document.getElementById('rowPrincipale');
+  if (rp) rp.style.display = '';
+  FORM_IDS.forEach(function(id){
+    var f = document.getElementById(id); if (f) f.classList.remove('show');
+  });
+}
+
+function setBusy(btnId, busy, labelBusy, labelNormaleHtml){
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+  btn.disabled = busy;
+  btn.innerHTML = busy ? '<span class="spinner"></span> '+labelBusy : labelNormaleHtml;
+}
+
+function confermaAmmetti(idPratica){
+  if (BUSY) return;
+  var gruppo = document.getElementById('inpGruppo').value;
+  var ruolo  = document.getElementById('inpRuolo').value;
+  BUSY = true;
+  setBusy('btnConfermaAmmetti', true, 'Ammissione in corso…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaAmmetti', iconCheck()+' Conferma ammissione'); })
+    .presidenzaAmmetti(idPratica, gruppo, ruolo);
+}
+function confermaRifiuta(idPratica){
+  if (BUSY) return;
+  var motivo = document.getElementById('inpMotivoRifiuto').value.trim();
+  if (!motivo){ mostraToast('Il motivo del rifiuto è obbligatorio.', true); return; }
+  BUSY = true;
+  setBusy('btnConfermaRifiuta', true, 'Invio…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaRifiuta', 'Conferma rifiuto'); })
+    .presidenzaRifiuta(idPratica, motivo);
+}
+function confermaRatifica(idPratica){
+  if (BUSY) return;
+  var rif = document.getElementById('inpRatifica').value.trim();
+  if (!rif){ mostraToast('Servono gli estremi della ratifica.', true); return; }
+  BUSY = true;
+  setBusy('btnConfermaRatifica', true, 'Registrazione…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaRatifica', 'Registra ratifica'); })
+    .presidenzaRegistraRatifica(idPratica, rif);
+}
+function confermaProponi(idPratica){
+  if (BUSY) return;
+  var motivo = document.getElementById('inpMotivoProponi').value.trim();
+  if (!motivo){ mostraToast('Il motivo della proposta è obbligatorio.', true); return; }
+  var senzaAvviso = document.getElementById('inpSenzaAvviso').checked;
+  BUSY = true;
+  setBusy('btnConfermaProponi', true, 'Registrazione…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaProponi', 'Registra proposta'); })
+    .presidenzaProponiEspulsione(idPratica, motivo, senzaAvviso);
+}
+function confermaEspelli(idPratica){
+  if (BUSY) return;
+  var delibera = document.getElementById('inpDeliberaEspelli').value.trim();
+  var motivo   = document.getElementById('inpMotivoEspelli').value.trim();
+  if (!delibera){ mostraToast('Servono gli estremi della delibera dell\'Assemblea (Art. 9.3 Statuto).', true); return; }
+  if (!motivo){ mostraToast('La motivazione deliberata è obbligatoria.', true); return; }
+  BUSY = true;
+  setBusy('btnConfermaEspelli', true, 'Esecuzione…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaEspelli', 'Esegui la delibera'); })
+    .presidenzaEspelli(idPratica, motivo, delibera);
+}
+function confermaRitira(idPratica){
+  if (BUSY) return;
+  var esito = document.getElementById('inpEsitoRitira').value.trim();
+  BUSY = true;
+  setBusy('btnConfermaRitira', true, 'Ritiro…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaRitira', 'Ritira la proposta'); })
+    .presidenzaAnnullaPropostaEspulsione(idPratica, esito);
+}
+function confermaCessazione(idPratica){
+  if (BUSY) return;
+  var causa     = document.getElementById('inpCausaCess').value;
+  var data      = document.getElementById('inpDataCess').value;
+  var dettaglio = document.getElementById('inpDettaglioCess').value.trim();
+  BUSY = true;
+  setBusy('btnConfermaCessazione', true, 'Registrazione…');
+  google.script.run
+    .withSuccessHandler(function(res){ onAzioneOk(res); })
+    .withFailureHandler(function(err){ onAzioneErr(err, 'btnConfermaCessazione', 'Registra cessazione'); })
+    .presidenzaRegistraCessazione(idPratica, causa, dettaglio, data);
+}
+
+function onAzioneOk(res){
+  BUSY = false;
+  mostraToast((res && res.messaggio) || 'Fatto.', !(res && res.ok !== false));
+  PENDING_FORM = null;
+  // Ammissione/rifiuto/espulsione scrivono nello Storico: la cronologia in
+  // cache non è più aggiornata.
+  CRONOLOGIA_CACHE = {};
+  caricaDati({ mantieniSelezione:true });
+}
+function onAzioneErr(err, btnId, labelHtml){
+  BUSY = false;
+  setBusy(btnId, false, '', labelHtml);
+  mostraToast((err && err.message) || String(err), true);
+}
+
+// ── Toast ────────────────────────────────────────────────────────────────
+function mostraToast(msg, isErr){
+  var wrap = document.getElementById('toastWrap');
+  var t = document.createElement('div');
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.innerHTML = '<span class="dot"></span><span>'+esc(msg)+'</span>';
+  wrap.appendChild(t);
+  requestAnimationFrame(function(){ t.classList.add('show'); });
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){ t.remove(); }, 260);
+  }, isErr ? 5200 : 3400);
+}
+</script>
+</body>
+</html>
